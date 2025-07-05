@@ -260,22 +260,32 @@ makeTabButton("Dupe/Generate", dupeGenFrame)
 -- =============================================
 -- Section 6: Populate Tabs
 -- =============================================
+-- Populate the first tab (which will be visible by default)
 makeLabel(tradeScamFrame, "Victim Name")
 makeInput(tradeScamFrame, "UsernameHere")
 makeButton(tradeScamFrame, "Freeze Trade", 18) -- Enlarged text
 makeButton(tradeScamFrame, "Force Accept", 16)
 
+-- Force-render the AutoFarm tab by making it visible during population
+autoFarmFrame.Visible = true
 makeToggle(autoFarmFrame, "Box ESP")
 makeToggle(autoFarmFrame, "Skeleton ESP")
+autoFarmFrame.Visible = false
 
+-- Force-render the Godly Spawner tab
+godlySpawnerFrame.Visible = true
 makeLabel(godlySpawnerFrame, "Enter Item Name")
 makeInput(godlySpawnerFrame, "e.g. Harvester")
 makeButton(godlySpawnerFrame, "SPAWN", 16)
+godlySpawnerFrame.Visible = false
 
+-- Force-render the Dupe/Generate tab
+dupeGenFrame.Visible = true
 local itemSpawnerGui -- Forward declare
 makeButton(dupeGenFrame, "Open Item Spawner", 16, function()
     if itemSpawnerGui then itemSpawnerGui.Enabled = true end
 end)
+dupeGenFrame.Visible = false
 
 -- =============================================
 -- Section 7: Item Spawner Window
@@ -384,4 +394,4 @@ spawnBtn.Size = UDim2.new(0.5, -5, 0, 35)
 -- Section 8: Finalization
 -- =============================================
 switchTab(tradeScamButton, tradeScamFrame)
-print("MM2 GUI: Rebuilt script with compatibility fix loaded successfully.") 
+print("MM2 GUI: Rebuilt script with force-render compatibility fix loaded.") 

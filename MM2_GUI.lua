@@ -1,9 +1,9 @@
 --[[
     Murder Mystery 2 GUI - Rebuilt from Diagnostic
-    Version: 7 (Stable)
+    Version: 8 (Compatibility Fix)
 
-    This script is built upon the successful diagnostic test.
-    It uses simple, direct code and avoids complex structures to ensure maximum compatibility.
+    This version changes all UI element creation to set properties BEFORE parenting.
+    This is a compatibility fix for executors that struggle to render elements on hidden frames.
 ]]
 
 -- =============================================
@@ -35,24 +35,26 @@ screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Parent = screenGui
 mainFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
 mainFrame.BorderColor3 = Color3.fromRGB(60, 60, 60)
 mainFrame.Position = UDim2.fromScale(0.5, 0.5)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Size = UDim2.new(0, 420, 0, 280)
 mainFrame.ClipsDescendants = true
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
+mainFrame.Parent = screenGui
+
+local mainFrameCorner = Instance.new("UICorner")
+mainFrameCorner.CornerRadius = UDim.new(0, 8)
+mainFrameCorner.Parent = mainFrame
 
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
-topBar.Parent = mainFrame
 topBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 topBar.Size = UDim2.new(1, 0, 0, 40)
 topBar.BorderSizePixel = 0
+topBar.Parent = mainFrame
 
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Parent = topBar
 titleLabel.Text = "Murder Mystery 2"
 titleLabel.Font = Enum.Font.SourceSansBold
 titleLabel.TextColor3 = Color3.fromRGB(225, 225, 225)
@@ -61,6 +63,7 @@ titleLabel.BackgroundTransparency = 1
 titleLabel.Position = UDim2.new(0, 15, 0.5, 0)
 titleLabel.AnchorPoint = Vector2.new(0, 0.5)
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = topBar
 
 -- Reliable Dragging Mechanism
 local userInputService = game:GetService("UserInputService")
@@ -86,57 +89,107 @@ end)
 -- =============================================
 -- Section 3: Tabs and Content Panels
 -- =============================================
-local tabsPanel = Instance.new("Frame", mainFrame)
+local tabsPanel = Instance.new("Frame")
 tabsPanel.BackgroundTransparency = 1
 tabsPanel.Size = UDim2.new(0, 150, 1, -40)
 tabsPanel.Position = UDim2.new(0, 0, 0, 40)
-Instance.new("UIListLayout", tabsPanel).Padding = UDim.new(0, 5)
+tabsPanel.Parent = mainFrame
+local tabsLayout = Instance.new("UIListLayout")
+tabsLayout.Padding = UDim.new(0, 5)
+tabsLayout.Parent = tabsPanel
 
-local contentPanel = Instance.new("Frame", mainFrame)
+local contentPanel = Instance.new("Frame")
 contentPanel.BackgroundTransparency = 1
 contentPanel.Size = UDim2.new(1, -150, 1, -40)
 contentPanel.Position = UDim2.new(0, 150, 0, 40)
+contentPanel.Parent = mainFrame
 
 -- =============================================
--- Section 4: UI Creation Helper Functions
+-- Section 4: UI Creation Helper Functions (Safe Parenting)
 -- =============================================
 local function makeLabel(parent, text)
-    local label = Instance.new("TextLabel", parent)
-    label.Text, label.Font, label.TextColor3, label.TextSize, label.BackgroundTransparency, label.TextXAlignment = text, Enum.Font.SourceSansBold, Color3.fromRGB(220, 220, 220), 16, 1, Enum.TextXAlignment.Left
+    local label = Instance.new("TextLabel")
+    label.Text = text
+    label.Font = Enum.Font.SourceSansBold
+    label.TextColor3 = Color3.fromRGB(220, 220, 220)
+    label.TextSize = 16
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
     label.Size = UDim2.new(1, 0, 0, 20)
+    label.Parent = parent
     return label
 end
 
 local function makeInput(parent, placeholder)
-    local textbox = Instance.new("TextBox", parent)
-    textbox.PlaceholderText, textbox.Font, textbox.TextSize, textbox.TextColor3, textbox.BackgroundColor3 = placeholder, Enum.Font.SourceSans, 14, Color3.fromRGB(240, 240, 240), Color3.fromRGB(50, 50, 50)
+    local textbox = Instance.new("TextBox")
+    textbox.PlaceholderText = placeholder
+    textbox.Font = Enum.Font.SourceSans
+    textbox.TextSize = 14
+    textbox.TextColor3 = Color3.fromRGB(240, 240, 240)
+    textbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     textbox.Size = UDim2.new(1, 0, 0, 35)
-    Instance.new("UICorner", textbox).CornerRadius = UDim.new(0, 4)
-    Instance.new("UIPadding", textbox).PaddingLeft = UDim.new(0, 10)
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 4)
+    corner.Parent = textbox
+    
+    local padding = Instance.new("UIPadding")
+    padding.PaddingLeft = UDim.new(0, 10)
+    padding.Parent = textbox
+    
+    textbox.Parent = parent
     return textbox
 end
 
 local function makeButton(parent, title, size, onClick)
-    local button = Instance.new("TextButton", parent)
-    button.Text, button.Font, button.TextSize, button.TextColor3, button.BackgroundColor3, button.TextXAlignment = title, Enum.Font.SourceSansBold, size, Color3.fromRGB(230, 230, 230), Color3.fromRGB(50, 50, 50), Enum.TextXAlignment.Center
+    local button = Instance.new("TextButton")
+    button.Text = title
+    button.Font = Enum.Font.SourceSansBold
+    button.TextSize = size
+    button.TextColor3 = Color3.fromRGB(230, 230, 230)
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.TextXAlignment = Enum.TextXAlignment.Center
     button.Size = UDim2.new(1, 0, 0, 40)
-    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 4)
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 4)
+    corner.Parent = button
+    
     if onClick then button.MouseButton1Click:Connect(onClick) end
+    
+    button.Parent = parent
     return button
 end
 
 local function makeToggle(parent, text)
-    local frame = Instance.new("Frame", parent)
-    frame.BackgroundTransparency, frame.Size = 1, UDim2.new(1, 0, 0, 30)
-    makeLabel(frame, text).Size = UDim2.new(0.7, 0, 1, 0)
-    
-    local switch = Instance.new("TextButton", frame)
-    switch.Text, switch.Size, switch.Position, switch.AnchorPoint, switch.BackgroundColor3 = "", UDim2.new(0, 50, 0, 24), UDim2.new(1, -55, 0.5, 0), Vector2.new(0, 0.5), Color3.fromRGB(80, 80, 80)
-    Instance.new("UICorner", switch).CornerRadius = UDim.new(0, 12)
+    local frame = Instance.new("Frame")
+    frame.BackgroundTransparency = 1
+    frame.Size = UDim2.new(1, 0, 0, 30)
 
-    local knob = Instance.new("Frame", switch)
-    knob.Size, knob.Position, knob.BackgroundColor3 = UDim2.fromOffset(20, 20), UDim2.fromPixels(2, 2), Color3.fromRGB(200, 200, 200)
-    Instance.new("UICorner", knob).CornerRadius = UDim.new(0, 10)
+    local label = makeLabel(frame, text)
+    label.Size = UDim2.new(0.7, 0, 1, 0)
+    
+    local switch = Instance.new("TextButton")
+    switch.Text = ""
+    switch.Size = UDim2.new(0, 50, 0, 24)
+    switch.Position = UDim2.new(1, -55, 0.5, 0)
+    switch.AnchorPoint = Vector2.new(0, 0.5)
+    switch.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    switch.Parent = frame
+    
+    local switchCorner = Instance.new("UICorner")
+    switchCorner.CornerRadius = UDim.new(0, 12)
+    switchCorner.Parent = switch
+
+    local knob = Instance.new("Frame")
+    knob.Size = UDim2.fromOffset(20, 20)
+    knob.Position = UDim2.fromPixels(2, 2)
+    knob.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    knob.Parent = switch
+    
+    local knobCorner = Instance.new("UICorner")
+    knobCorner.CornerRadius = UDim.new(0, 10)
+    knobCorner.Parent = knob
     
     local toggled = false
     switch.MouseButton1Click:Connect(function()
@@ -144,17 +197,28 @@ local function makeToggle(parent, text)
         switch.BackgroundColor3 = toggled and Color3.fromRGB(76, 175, 80) or Color3.fromRGB(80, 80, 80)
         knob:TweenPosition(toggled and UDim2.fromPixels(28, 2) or UDim2.fromPixels(2, 2), "Out", "Quad", 0.2, true)
     end)
+    
+    frame.Parent = parent
 end
 
 -- =============================================
 -- Section 5: Tab System (Simple & Reliable)
 -- =============================================
 local function makeContentFrame()
-    local frame = Instance.new("Frame", contentPanel)
-    frame.BackgroundTransparency, frame.Size, frame.Visible = 1, UDim2.new(1, 0, 1, 0), false
-    local padding = Instance.new("UIPadding", frame)
+    local frame = Instance.new("Frame")
+    frame.BackgroundTransparency = 1
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.Visible = false
+    frame.Parent = contentPanel
+    
+    local padding = Instance.new("UIPadding")
     padding.PaddingTop, padding.PaddingLeft, padding.PaddingRight = UDim.new(0, 15), UDim.new(0, 15), UDim.new(0, 15)
-    Instance.new("UIListLayout", frame).Padding = UDim.new(0, 10)
+    padding.Parent = frame
+    
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, 10)
+    layout.Parent = frame
+    
     return frame
 end
 
@@ -172,9 +236,16 @@ local function switchTab(tabButton, frameToShow)
 end
 
 local function makeTabButton(text, contentFrame)
-    local button = Instance.new("TextButton", tabsPanel)
-    button.Text, button.Font, button.TextSize, button.TextColor3, button.BackgroundColor3, button.TextXAlignment = "  " .. text, Enum.Font.SourceSans, 16, Color3.fromRGB(200, 200, 200), Color3.fromRGB(24, 24, 24), Enum.TextXAlignment.Left
+    local button = Instance.new("TextButton")
+    button.Text = "  " .. text
+    button.Font = Enum.Font.SourceSans
+    button.TextSize = 16
+    button.TextColor3 = Color3.fromRGB(200, 200, 200)
+    button.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+    button.TextXAlignment = Enum.TextXAlignment.Left
     button.Size = UDim2.new(1, 0, 0, 35)
+    button.Parent = tabsPanel
+    
     button.MouseButton1Click:Connect(function() switchTab(button, contentFrame) end)
     table.insert(allTabButtons, button)
     return button
@@ -209,12 +280,20 @@ end)
 -- =============================================
 -- Section 7: Item Spawner Window
 -- =============================================
-itemSpawnerGui = Instance.new("ScreenGui", playerGui)
-itemSpawnerGui.Name, itemSpawnerGui.ZIndexBehavior, itemSpawnerGui.Enabled = "MM2_Item_Spawner_GUI", Enum.ZIndexBehavior.Sibling, false
+itemSpawnerGui = Instance.new("ScreenGui")
+itemSpawnerGui.Name = "MM2_Item_Spawner_GUI"
+itemSpawnerGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+itemSpawnerGui.Enabled = false
+itemSpawnerGui.Parent = playerGui
 
-local spawnerFrame = Instance.new("Frame", itemSpawnerGui)
-spawnerFrame.BackgroundColor3, spawnerFrame.BorderColor3, spawnerFrame.BorderSizePixel = Color3.fromRGB(0, 0, 0), Color3.fromRGB(0, 255, 127), 2
-spawnerFrame.Position, spawnerFrame.AnchorPoint, spawnerFrame.Size = UDim2.fromScale(0.5, 0.5), Vector2.new(0.5, 0.5), UDim2.new(0, 350, 0, 220)
+local spawnerFrame = Instance.new("Frame")
+spawnerFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+spawnerFrame.BorderColor3 = Color3.fromRGB(0, 255, 127)
+spawnerFrame.BorderSizePixel = 2
+spawnerFrame.Position = UDim2.fromScale(0.5, 0.5)
+spawnerFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+spawnerFrame.Size = UDim2.new(0, 350, 0, 220)
+spawnerFrame.Parent = itemSpawnerGui
 
 local spawnerTitle = makeLabel(spawnerFrame, "Item Spawner")
 spawnerTitle.Size, spawnerTitle.TextXAlignment, spawnerTitle.TextSize = UDim2.new(1, 0, 0, 40), Enum.TextXAlignment.Center, 20
@@ -222,9 +301,15 @@ spawnerTitle.Size, spawnerTitle.TextXAlignment, spawnerTitle.TextSize = UDim2.ne
 local itemDropdownButton = makeInput(spawnerFrame, "Select an item...")
 itemDropdownButton.Position, itemDropdownButton.AnchorPoint, itemDropdownButton.Size = UDim2.new(0.5, 0, 0, 50), Vector2.new(0.5, 0), UDim2.new(0.9, 0, 0, 35)
 
-local dropdownScroll = Instance.new("ScrollingFrame", spawnerFrame)
-dropdownScroll.Size, dropdownScroll.Position, dropdownScroll.AnchorPoint = UDim2.new(0.9, 0, 0, 100), UDim2.new(0.5, 0, 0, 85), Vector2.new(0.5, 0)
-dropdownScroll.BackgroundColor3, dropdownScroll.BorderColor3, dropdownScroll.BorderSizePixel, dropdownScroll.Visible = Color3.fromRGB(40, 40, 40), Color3.fromRGB(80, 80, 80), 1, false
+local dropdownScroll = Instance.new("ScrollingFrame")
+dropdownScroll.Size = UDim2.new(0.9, 0, 0, 100)
+dropdownScroll.Position = UDim2.new(0.5, 0, 0, 85)
+dropdownScroll.AnchorPoint = Vector2.new(0.5, 0)
+dropdownScroll.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+dropdownScroll.BorderColor3 = Color3.fromRGB(80, 80, 80)
+dropdownScroll.BorderSizePixel = 1
+dropdownScroll.Visible = false
+dropdownScroll.Parent = spawnerFrame
 Instance.new("UIListLayout", dropdownScroll).Padding = UDim.new(0, 2)
 
 local itemList, selectedItem = { "Harvester", "Candy", "Sugar", "Icebreaker", "Elderwood Revolver", "Lightbringer", "Darkbringer", "Chroma Lightbringer", "Chroma Darkbringer", "Batwing", "Icewing", "Nik's Scythe", "America", "Blood", "Phaser", "Laser", "Shadow", "Splitter", "Deathshard", "Fang", "Saw", "Slasher", "Tides", "Heat", "Luger", "Pixel", "Shark", "Flames", "Chill", "Clockwork", "Spider", "Virtual" }, ""
@@ -238,26 +323,41 @@ itemDropdownButton.Focused:Connect(function() dropdownScroll.Visible = true end)
 itemDropdownButton.FocusLost:Connect(function() task.wait(0.1) dropdownScroll.Visible = false end)
 
 local closeButton = makeButton(spawnerFrame, "Close Menu", 16, function() itemSpawnerGui.Enabled = false end)
-closeButton.Position, closeButton.AnchorPoint, closeButton.Size = UDim2.new(0.05, 0, 1, -40), Vector2.new(0, 1), UDim2.new(0.4, -5, 0, 35)
+closeButton.Position = UDim2.new(0.05, 0, 1, -40)
+closeButton.AnchorPoint = Vector2.new(0, 1)
+closeButton.Size = UDim2.new(0.4, -5, 0, 35)
 
 local function runSpawnSequence()
     if selectedItem == "" then return end
     itemSpawnerGui.Enabled = false
     
-    local progressGui = Instance.new("ScreenGui", playerGui)
+    local progressGui = Instance.new("ScreenGui")
     progressGui.Name = "MM2_Progress_GUI"
+    progressGui.Parent = playerGui
     
-    local pFrame = Instance.new("Frame", progressGui)
-    pFrame.Position, pFrame.AnchorPoint, pFrame.Size, pFrame.BackgroundColor3 = UDim2.fromScale(0.5, 0.8), Vector2.new(0.5, 0.5), UDim2.new(0, 350, 0, 80), Color3.fromRGB(20, 20, 20)
+    local pFrame = Instance.new("Frame")
+    pFrame.Position = UDim2.fromScale(0.5, 0.8)
+    pFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    pFrame.Size = UDim2.new(0, 350, 0, 80)
+    pFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    pFrame.Parent = progressGui
     
     local pText = makeLabel(pFrame, "Spawning...")
-    pText.Position, pText.AnchorPoint, pText.TextXAlignment = UDim2.new(0.5, 0, 0, 15), Vector2.new(0.5, 0), Enum.TextXAlignment.Center
+    pText.Position = UDim2.new(0.5, 0, 0, 15)
+    pText.AnchorPoint = Vector2.new(0.5, 0)
+    pText.TextXAlignment = Enum.TextXAlignment.Center
     
-    local barBg = Instance.new("Frame", pFrame)
-    barBg.Position, barBg.AnchorPoint, barBg.Size, barBg.BackgroundColor3 = UDim2.new(0.5, 0, 0, 45), Vector2.new(0.5, 0), UDim2.new(0.9, 0, 0, 15), Color3.fromRGB(10, 10, 10)
+    local barBg = Instance.new("Frame")
+    barBg.Position = UDim2.new(0.5, 0, 0, 45)
+    barBg.AnchorPoint = Vector2.new(0.5, 0)
+    barBg.Size = UDim2.new(0.9, 0, 0, 15)
+    barBg.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    barBg.Parent = pFrame
     
-    local barFill = Instance.new("Frame", barBg)
-    barFill.Size, barFill.BackgroundColor3 = UDim2.new(0, 0, 1, 0), Color3.fromRGB(0, 122, 255)
+    local barFill = Instance.new("Frame")
+    barFill.Size = UDim2.new(0, 0, 1, 0)
+    barFill.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
+    barFill.Parent = barBg
     
     for i = 1, 100 do
         task.wait(0.1)
@@ -266,19 +366,22 @@ local function runSpawnSequence()
     end
     
     pText.Text = "Spawned: " .. selectedItem
-    local newItem = Instance.new("Tool", player.Backpack)
+    local newItem = Instance.new("Tool")
     newItem.Name = selectedItem
     Instance.new("Part", newItem).Name = "Handle"
+    newItem.Parent = player.Backpack
     
     task.wait(1.5)
     progressGui:Destroy()
 end
 
 local spawnBtn = makeButton(spawnerFrame, "Spawn", 16, runSpawnSequence)
-spawnBtn.Position, spawnBtn.AnchorPoint, spawnBtn.Size = UDim2.new(0.95, 0, 1, -40), Vector2.new(1, 1), UDim2.new(0.5, -5, 0, 35)
+spawnBtn.Position = UDim2.new(0.95, 0, 1, -40)
+spawnBtn.AnchorPoint = Vector2.new(1, 1)
+spawnBtn.Size = UDim2.new(0.5, -5, 0, 35)
 
 -- =============================================
 -- Section 8: Finalization
 -- =============================================
 switchTab(tradeScamButton, tradeScamFrame)
-print("MM2 GUI: Rebuilt script loaded successfully.") 
+print("MM2 GUI: Rebuilt script with compatibility fix loaded successfully.") 

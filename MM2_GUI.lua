@@ -1,10 +1,11 @@
 --[[
-    Murder Mystery 2 GUI - Rebuilt from Diagnostic
-    Version: 11 (Lazy Loading - Final)
+    Murder Mystery 2 GUI - Final Version
+    Version: 12 (Ultra-Simple Structure + Hide/Show Feature)
 
-    This version implements a true "lazy loading" system based on user feedback.
-    Content for a tab is only created AFTER the tab is made visible on the first click.
-    This ensures elements are always parented to a visible frame, fixing executor compatibility.
+    This script returns to the most basic and reliable structure:
+    - All UI elements for all tabs are created upfront. No lazy loading or other tricks.
+    - Tab switching only toggles visibility.
+    - Implements the user-requested hide/show functionality.
 ]]
 
 -- =============================================
@@ -27,7 +28,7 @@ local player = game:GetService("Players").LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 -- =============================================
--- Section 2: Main GUI Window
+-- Section 2: Main GUI & Hide/Show Elements
 -- =============================================
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "MM2_Main_GUI"
@@ -42,9 +43,23 @@ mainFrame.Position = UDim2.fromScale(0.5, 0.5)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Size = UDim2.new(0, 420, 0, 280)
 mainFrame.ClipsDescendants = true
+mainFrame.Visible = true -- Initially visible
 mainFrame.Parent = screenGui
-
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
+
+-- Button to SHOW the menu
+local showButton = Instance.new("TextButton")
+showButton.Name = "ShowButton"
+showButton.Size = UDim2.new(0, 50, 0, 50)
+showButton.Position = UDim2.new(0, 15, 0.5, 0)
+showButton.AnchorPoint = Vector2.new(0, 0.5)
+showButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+showButton.BorderColor3 = Color3.fromRGB(80, 80, 80)
+showButton.BorderSizePixel = 1
+showButton.Text = ""
+showButton.Visible = false -- Initially hidden
+showButton.Parent = screenGui
+Instance.new("UICorner", showButton).CornerRadius = UDim.new(0, 6)
 
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
@@ -52,6 +67,30 @@ topBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 topBar.Size = UDim2.new(1, 0, 0, 40)
 topBar.BorderSizePixel = 0
 topBar.Parent = mainFrame
+
+-- Button to HIDE the menu
+local hideButton = Instance.new("TextButton")
+hideButton.Name = "HideButton"
+hideButton.Size = UDim2.new(0, 24, 0, 24)
+hideButton.Position = UDim2.new(1, -15, 0.5, 0)
+hideButton.AnchorPoint = Vector2.new(1, 0.5)
+hideButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+hideButton.Text = "X"
+hideButton.Font = Enum.Font.SourceSansBold
+hideButton.TextSize = 16
+hideButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+hideButton.Parent = topBar
+Instance.new("UICorner", hideButton).CornerRadius = UDim.new(0, 4)
+
+-- Hide/Show Logic
+hideButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = false
+    showButton.Visible = true
+end)
+showButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = true
+    showButton.Visible = false
+end)
 
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Text = "Murder Mystery 2"
@@ -64,7 +103,7 @@ titleLabel.AnchorPoint = Vector2.new(0, 0.5)
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Parent = topBar
 
--- Reliable Dragging Mechanism
+-- Dragging Mechanism
 local userInputService = game:GetService("UserInputService")
 local dragging, dragInput, lastPosition
 topBar.InputBegan:Connect(function(input)
@@ -100,47 +139,40 @@ contentPanel.Position = UDim2.new(0, 150, 0, 40)
 contentPanel.Parent = mainFrame
 
 -- =============================================
--- Section 4: UI Creation Helper Functions
+-- Section 4: Helper Functions
 -- =============================================
 local function makeLabel(parent, text)
-    local label = Instance.new("TextLabel")
+    local label = Instance.new("TextLabel", parent)
     label.Text, label.Font, label.TextColor3, label.TextSize, label.BackgroundTransparency, label.TextXAlignment = text, Enum.Font.SourceSansBold, Color3.fromRGB(220, 220, 220), 16, 1, Enum.TextXAlignment.Left
     label.Size = UDim2.new(1, 0, 0, 20)
-    label.Parent = parent
-    return label
 end
 
 local function makeInput(parent, placeholder)
-    local textbox = Instance.new("TextBox")
+    local textbox = Instance.new("TextBox", parent)
     textbox.PlaceholderText, textbox.Font, textbox.TextSize, textbox.TextColor3, textbox.BackgroundColor3 = placeholder, Enum.Font.SourceSans, 14, Color3.fromRGB(240, 240, 240), Color3.fromRGB(50, 50, 50)
     textbox.Size = UDim2.new(1, 0, 0, 35)
     Instance.new("UICorner", textbox).CornerRadius = UDim.new(0, 4)
     Instance.new("UIPadding", textbox).PaddingLeft = UDim.new(0, 10)
-    textbox.Parent = parent
-    return textbox
 end
 
 local function makeButton(parent, title, size, onClick)
-    local button = Instance.new("TextButton")
+    local button = Instance.new("TextButton", parent)
     button.Text, button.Font, button.TextSize, button.TextColor3, button.BackgroundColor3, button.TextXAlignment = title, Enum.Font.SourceSansBold, size, Color3.fromRGB(230, 230, 230), Color3.fromRGB(50, 50, 50), Enum.TextXAlignment.Center
     button.Size = UDim2.new(1, 0, 0, 40)
     Instance.new("UICorner", button).CornerRadius = UDim.new(0, 4)
     if onClick then button.MouseButton1Click:Connect(onClick) end
-    button.Parent = parent
     return button
 end
 
 local function makeToggle(parent, text)
-    local frame = Instance.new("Frame")
+    local frame = Instance.new("Frame", parent)
     frame.BackgroundTransparency, frame.Size = 1, UDim2.new(1, 0, 0, 30)
     makeLabel(frame, text).Size = UDim2.new(0.7, 0, 1, 0)
-    local switch = Instance.new("TextButton")
+    local switch = Instance.new("TextButton", frame)
     switch.Text, switch.Size, switch.Position, switch.AnchorPoint, switch.BackgroundColor3 = "", UDim2.new(0, 50, 0, 24), UDim2.new(1, -55, 0.5, 0), Vector2.new(0, 0.5), Color3.fromRGB(80, 80, 80)
-    switch.Parent = frame
     Instance.new("UICorner", switch).CornerRadius = UDim.new(0, 12)
-    local knob = Instance.new("Frame")
+    local knob = Instance.new("Frame", switch)
     knob.Size, knob.Position, knob.BackgroundColor3 = UDim2.fromOffset(20, 20), UDim2.fromPixels(2, 2), Color3.fromRGB(200, 200, 200)
-    knob.Parent = switch
     Instance.new("UICorner", knob).CornerRadius = UDim.new(0, 10)
     local toggled = false
     switch.MouseButton1Click:Connect(function()
@@ -148,27 +180,28 @@ local function makeToggle(parent, text)
         switch.BackgroundColor3 = toggled and Color3.fromRGB(76, 175, 80) or Color3.fromRGB(80, 80, 80)
         knob:TweenPosition(toggled and UDim2.fromPixels(28, 2) or UDim2.fromPixels(2, 2), "Out", "Quad", 0.2, true)
     end)
-    frame.Parent = parent
 end
 
 -- =============================================
--- Section 5: Tab System (Lazy Loading - Final)
+-- Section 5: Tab Creation and Switching
 -- =============================================
 local function makeContentFrame()
-    local frame = Instance.new("Frame")
+    local frame = Instance.new("Frame", contentPanel)
     frame.BackgroundTransparency = 1
     frame.Size = UDim2.new(1, 0, 1, 0)
     frame.Visible = false
-    frame.Parent = contentPanel
     Instance.new("UIPadding", frame).Padding = UDim.new(0,15)
     Instance.new("UIListLayout", frame).Padding = UDim.new(0, 10)
     return frame
 end
 
-local tradeScamFrame, autoFarmFrame, godlySpawnerFrame, dupeGenFrame = makeContentFrame(), makeContentFrame(), makeContentFrame(), makeContentFrame()
+local tradeScamFrame = makeContentFrame()
+local autoFarmFrame = makeContentFrame()
+local godlySpawnerFrame = makeContentFrame()
+local dupeGenFrame = makeContentFrame()
+
 local allContentFrames = {tradeScamFrame, autoFarmFrame, godlySpawnerFrame, dupeGenFrame}
 local allTabButtons = {}
-local populatedTabs = {}
 
 local function switchTab(tabButton, frameToShow)
     for _, frame in ipairs(allContentFrames) do frame.Visible = false end
@@ -179,68 +212,49 @@ local function switchTab(tabButton, frameToShow)
     tabButton.BackgroundColor3, tabButton.TextColor3 = Color3.fromRGB(35, 35, 35), Color3.fromRGB(255, 255, 255)
 end
 
--- =============================================
--- Section 6: Population Functions & Tab Creation
--- =============================================
-local function populateTradeScam()
-    makeLabel(tradeScamFrame, "Victim Name")
-    makeInput(tradeScamFrame, "UsernameHere")
-    makeButton(tradeScamFrame, "Freeze Trade", 18)
-    makeButton(tradeScamFrame, "Force Accept", 16)
-end
-
-local function populateAutoFarm()
-    makeToggle(autoFarmFrame, "Box ESP")
-    makeToggle(autoFarmFrame, "Skeleton ESP")
-end
-
-local function populateGodlySpawner()
-    makeLabel(godlySpawnerFrame, "Enter Item Name")
-    makeInput(godlySpawnerFrame, "e.g. Harvester")
-    makeButton(godlySpawnerFrame, "SPAWN", 16)
-end
-
-local itemSpawnerGui
-local function populateDupeGenerate()
-    makeButton(dupeGenFrame, "Open Item Spawner", 16, function()
-        if itemSpawnerGui then itemSpawnerGui.Enabled = true end
-    end)
-end
-
-local function makeTabButton(text, contentFrame, populationFunc)
-    local button = Instance.new("TextButton")
+local function makeTabButton(text, contentFrame)
+    local button = Instance.new("TextButton", tabsPanel)
     button.Text, button.Font, button.TextSize, button.TextColor3, button.BackgroundColor3, button.TextXAlignment = "  " .. text, Enum.Font.SourceSans, 16, Color3.fromRGB(200, 200, 200), Color3.fromRGB(24, 24, 24), Enum.TextXAlignment.Left
     button.Size = UDim2.new(1, 0, 0, 35)
-    button.Parent = tabsPanel
-    
-    button.MouseButton1Click:Connect(function()
-        switchTab(button, contentFrame)
-        if not populatedTabs[contentFrame] then
-            populationFunc()
-            populatedTabs[contentFrame] = true
-        end
-    end)
-    
+    button.MouseButton1Click:Connect(function() switchTab(button, contentFrame) end)
     table.insert(allTabButtons, button)
     return button
 end
 
-local tradeScamButton = makeTabButton("Trade Scam", tradeScamFrame, populateTradeScam)
-makeTabButton("AutoFarm/ESP", autoFarmFrame, populateAutoFarm)
-makeTabButton("Godly Spawner", godlySpawnerFrame, populateGodlySpawner)
-makeTabButton("Dupe/Generate", dupeGenFrame, populateDupeGenerate)
+local tradeScamButton = makeTabButton("Trade Scam", tradeScamFrame)
+makeTabButton("AutoFarm/ESP", autoFarmFrame)
+makeTabButton("Godly Spawner", godlySpawnerFrame)
+makeTabButton("Dupe/Generate", dupeGenFrame)
+
+-- =============================================
+-- Section 6: Populate All Tabs At Start
+-- =============================================
+makeLabel(tradeScamFrame, "Victim Name")
+makeInput(tradeScamFrame, "UsernameHere")
+makeButton(tradeScamFrame, "Freeze Trade", 18)
+makeButton(tradeScamFrame, "Force Accept", 16)
+
+makeToggle(autoFarmFrame, "Box ESP")
+makeToggle(autoFarmFrame, "Skeleton ESP")
+
+makeLabel(godlySpawnerFrame, "Enter Item Name")
+makeInput(godlySpawnerFrame, "e.g. Harvester")
+makeButton(godlySpawnerFrame, "SPAWN", 16)
+
+local itemSpawnerGui
+makeButton(dupeGenFrame, "Open Item Spawner", 16, function()
+    if itemSpawnerGui then itemSpawnerGui.Enabled = true end
+end)
 
 -- =============================================
 -- Section 7: Item Spawner Window
 -- =============================================
-itemSpawnerGui = Instance.new("ScreenGui")
+itemSpawnerGui = Instance.new("ScreenGui", playerGui)
 itemSpawnerGui.Name, itemSpawnerGui.ZIndexBehavior, itemSpawnerGui.Enabled = "MM2_Item_Spawner_GUI", Enum.ZIndexBehavior.Sibling, false
-itemSpawnerGui.Parent = playerGui
 
-local spawnerFrame = Instance.new("Frame")
+local spawnerFrame = Instance.new("Frame", itemSpawnerGui)
 spawnerFrame.BackgroundColor3, spawnerFrame.BorderColor3, spawnerFrame.BorderSizePixel = Color3.fromRGB(0, 0, 0), Color3.fromRGB(0, 255, 127), 2
 spawnerFrame.Position, spawnerFrame.AnchorPoint, spawnerFrame.Size = UDim2.fromScale(0.5, 0.5), Vector2.new(0.5, 0.5), UDim2.new(0, 350, 0, 220)
-spawnerFrame.Parent = itemSpawnerGui
 
 local spawnerTitle = makeLabel(spawnerFrame, "Item Spawner")
 spawnerTitle.Size, spawnerTitle.TextXAlignment, spawnerTitle.TextSize = UDim2.new(1, 0, 0, 40), Enum.TextXAlignment.Center, 20
@@ -248,15 +262,14 @@ spawnerTitle.Size, spawnerTitle.TextXAlignment, spawnerTitle.TextSize = UDim2.ne
 local itemDropdownButton = makeInput(spawnerFrame, "Select an item...")
 itemDropdownButton.Position, itemDropdownButton.AnchorPoint, itemDropdownButton.Size = UDim2.new(0.5, 0, 0, 50), Vector2.new(0.5, 0), UDim2.new(0.9, 0, 0, 35)
 
-local dropdownScroll = Instance.new("ScrollingFrame")
+local dropdownScroll = Instance.new("ScrollingFrame", spawnerFrame)
 dropdownScroll.Size, dropdownScroll.Position, dropdownScroll.AnchorPoint = UDim2.new(0.9, 0, 0, 100), UDim2.new(0.5, 0, 0, 85), Vector2.new(0.5, 0)
 dropdownScroll.BackgroundColor3, dropdownScroll.BorderColor3, dropdownScroll.BorderSizePixel, dropdownScroll.Visible = Color3.fromRGB(40, 40, 40), Color3.fromRGB(80, 80, 80), 1, false
-dropdownScroll.Parent = spawnerFrame
 Instance.new("UIListLayout", dropdownScroll).Padding = UDim.new(0, 2)
 
 local itemList, selectedItem = { "Harvester", "Candy", "Sugar", "Icebreaker", "Elderwood Revolver", "Lightbringer", "Darkbringer", "Chroma Lightbringer", "Chroma Darkbringer", "Batwing", "Icewing", "Nik's Scythe", "America", "Blood", "Phaser", "Laser", "Shadow", "Splitter", "Deathshard", "Fang", "Saw", "Slasher", "Tides", "Heat", "Luger", "Pixel", "Shark", "Flames", "Chill", "Clockwork", "Spider", "Virtual" }, ""
 for _, name in ipairs(itemList) do
-    local btn = makeButton(dropdownScroll, name, 14, function()
+    local btn = makeButton(spawnerFrame, name, 14, function()
         itemDropdownButton.Text, selectedItem, dropdownScroll.Visible = name, name, false
     end)
     btn.Size = UDim2.new(1, -10, 0, 25)
@@ -271,24 +284,20 @@ local function runSpawnSequence()
     if selectedItem == "" then return end
     itemSpawnerGui.Enabled = false
     
-    local progressGui = Instance.new("ScreenGui")
+    local progressGui = Instance.new("ScreenGui", playerGui)
     progressGui.Name = "MM2_Progress_GUI"
-    progressGui.Parent = playerGui
     
-    local pFrame = Instance.new("Frame")
+    local pFrame = Instance.new("Frame", progressGui)
     pFrame.Position, pFrame.AnchorPoint, pFrame.Size, pFrame.BackgroundColor3 = UDim2.fromScale(0.5, 0.8), Vector2.new(0.5, 0.5), UDim2.new(0, 350, 0, 80), Color3.fromRGB(20, 20, 20)
-    pFrame.Parent = progressGui
     
     local pText = makeLabel(pFrame, "Spawning...")
     pText.Position, pText.AnchorPoint, pText.TextXAlignment = UDim2.new(0.5, 0, 0, 15), Vector2.new(0.5, 0), Enum.TextXAlignment.Center
     
-    local barBg = Instance.new("Frame")
+    local barBg = Instance.new("Frame", pFrame)
     barBg.Position, barBg.AnchorPoint, barBg.Size, barBg.BackgroundColor3 = UDim2.new(0.5, 0, 0, 45), Vector2.new(0.5, 0), UDim2.new(0.9, 0, 0, 15), Color3.fromRGB(10, 10, 10)
-    barBg.Parent = pFrame
     
-    local barFill = Instance.new("Frame")
+    local barFill = Instance.new("Frame", barBg)
     barFill.Size, barFill.BackgroundColor3 = UDim2.new(0, 0, 1, 0), Color3.fromRGB(0, 122, 255)
-    barFill.Parent = barBg
     
     for i = 1, 100 do
         task.wait(0.1)
@@ -297,10 +306,9 @@ local function runSpawnSequence()
     end
     
     pText.Text = "Spawned: " .. selectedItem
-    local newItem = Instance.new("Tool")
+    local newItem = Instance.new("Tool", player.Backpack)
     newItem.Name = selectedItem
     Instance.new("Part", newItem).Name = "Handle"
-    newItem.Parent = player.Backpack
     
     task.wait(1.5)
     progressGui:Destroy()
@@ -312,9 +320,6 @@ spawnBtn.Position, spawnBtn.AnchorPoint, spawnBtn.Size = UDim2.new(0.95, 0, 1, -
 -- =============================================
 -- Section 8: Finalization
 -- =============================================
--- Manually trigger the first tab's visibility and population
 switchTab(tradeScamButton, tradeScamFrame)
-populateTradeScam()
-populatedTabs[tradeScamFrame] = true
 
-print("MM2 GUI: Lazy loading fix script loaded.") 
+print("MM2 GUI: Final version with hide/show loaded.") 

@@ -1,10 +1,10 @@
 --[[
     Murder Mystery 2 GUI - Rebuilt from Diagnostic
-    Version: 9 (Lazy Loading Fix)
+    Version: 10 (Re-Parenting Fix)
 
-    This version implements "lazy loading" for tab content.
-    UI elements for a tab are only created the first time the tab is clicked.
-    This is the most compatible method for executors that struggle with hidden frames.
+    This version implements a re-parenting strategy on tab switching.
+    This is a brute-force method to fix rendering bugs in specific executors
+    by forcing a complete redraw of the tab's contents on every click.
 ]]
 
 -- =============================================
@@ -158,7 +158,7 @@ local function makeToggle(parent, text)
 end
 
 -- =============================================
--- Section 5: Tab System (Lazy Loading)
+-- Section 5: Tab System (Re-Parenting Fix)
 -- =============================================
 local function makeContentFrame()
     local frame = Instance.new("Frame")
@@ -179,68 +179,67 @@ local tradeScamFrame, autoFarmFrame, godlySpawnerFrame, dupeGenFrame = makeConte
 local allContentFrames = {tradeScamFrame, autoFarmFrame, godlySpawnerFrame, dupeGenFrame}
 local allTabButtons = {}
 
-local function switchTabVisually(tabButton, frameToShow)
-    for _, frame in ipairs(allContentFrames) do frame.Visible = false end
+local function switchTab(tabButton, frameToShow)
+    -- Hide all other frames
+    for _, frame in ipairs(allContentFrames) do
+        if frame ~= frameToShow then
+            frame.Visible = false
+        end
+    end
+
+    -- Update button visuals
     for _, button in ipairs(allTabButtons) do
         button.BackgroundColor3, button.TextColor3 = Color3.fromRGB(24, 24, 24), Color3.fromRGB(200, 200, 200)
     end
-    frameToShow.Visible = true
     tabButton.BackgroundColor3, tabButton.TextColor3 = Color3.fromRGB(35, 35, 35), Color3.fromRGB(255, 255, 255)
+
+    -- Re-parent to force redraw
+    frameToShow.Parent = nil
+    frameToShow.Parent = contentPanel
+    frameToShow.Visible = true
 end
 
--- =============================================
--- Section 6: Population Functions (for Lazy Loading)
--- =============================================
-local itemSpawnerGui -- Forward declare
-
-local function populateTradeScam()
-    makeLabel(tradeScamFrame, "Victim Name")
-    makeInput(tradeScamFrame, "UsernameHere")
-    makeButton(tradeScamFrame, "Freeze Trade", 18)
-    makeButton(tradeScamFrame, "Force Accept", 16)
-end
-
-local function populateAutoFarm()
-    makeToggle(autoFarmFrame, "Box ESP")
-    makeToggle(autoFarmFrame, "Skeleton ESP")
-end
-
-local function populateGodlySpawner()
-    makeLabel(godlySpawnerFrame, "Enter Item Name")
-    makeInput(godlySpawnerFrame, "e.g. Harvester")
-    makeButton(godlySpawnerFrame, "SPAWN", 16)
-end
-
-local function populateDupeGenerate()
-    makeButton(dupeGenFrame, "Open Item Spawner", 16, function()
-        if itemSpawnerGui then itemSpawnerGui.Enabled = true end
-    end)
-end
-
-local function makeTabButton(text, contentFrame, populationFunc)
+local function makeTabButton(text, contentFrame)
     local button = Instance.new("TextButton")
     button.Text, button.Font, button.TextSize, button.TextColor3, button.BackgroundColor3, button.TextXAlignment = "  " .. text, Enum.Font.SourceSans, 16, Color3.fromRGB(200, 200, 200), Color3.fromRGB(24, 24, 24), Enum.TextXAlignment.Left
     button.Size = UDim2.new(1, 0, 0, 35)
-    
-    local isPopulated = false
     button.MouseButton1Click:Connect(function()
-        if not isPopulated then
-            populationFunc()
-            isPopulated = true
-        end
-        switchTabVisually(button, contentFrame)
+        switchTab(button, contentFrame)
     end)
-    
     button.Parent = tabsPanel
     table.insert(allTabButtons, button)
     return button
 end
 
--- Create tab buttons and link them to their population functions
-local tradeScamButton = makeTabButton("Trade Scam", tradeScamFrame, populateTradeScam)
-makeTabButton("AutoFarm/ESP", autoFarmFrame, populateAutoFarm)
-makeTabButton("Godly Spawner", godlySpawnerFrame, populateGodlySpawner)
-makeTabButton("Dupe/Generate", dupeGenFrame, populateDupeGenerate)
+-- =============================================
+-- Section 6: Populate All Tabs At Start
+-- =============================================
+-- Trade Scam
+makeLabel(tradeScamFrame, "Victim Name")
+makeInput(tradeScamFrame, "UsernameHere")
+makeButton(tradeScamFrame, "Freeze Trade", 18)
+makeButton(tradeScamFrame, "Force Accept", 16)
+
+-- AutoFarm/ESP
+makeToggle(autoFarmFrame, "Box ESP")
+makeToggle(autoFarmFrame, "Skeleton ESP")
+
+-- Godly Spawner
+makeLabel(godlySpawnerFrame, "Enter Item Name")
+makeInput(godlySpawnerFrame, "e.g. Harvester")
+makeButton(godlySpawnerFrame, "SPAWN", 16)
+
+-- Dupe/Generate
+local itemSpawnerGui -- Forward declare
+makeButton(dupeGenFrame, "Open Item Spawner", 16, function()
+    if itemSpawnerGui then itemSpawnerGui.Enabled = true end
+end)
+
+-- Create tab buttons
+local tradeScamButton = makeTabButton("Trade Scam", tradeScamFrame)
+makeTabButton("AutoFarm/ESP", autoFarmFrame)
+makeTabButton("Godly Spawner", godlySpawnerFrame)
+makeTabButton("Dupe/Generate", dupeGenFrame)
 
 -- =============================================
 -- Section 7: Item Spawner Window
@@ -324,8 +323,7 @@ spawnBtn.Position, spawnBtn.AnchorPoint, spawnBtn.Size = UDim2.new(0.95, 0, 1, -
 -- =============================================
 -- Section 8: Finalization
 -- =============================================
--- Initially, populate and show the first tab
-populateTradeScam()
-switchTabVisually(tradeScamButton, tradeScamFrame)
+-- Initially, show the first tab
+switchTab(tradeScamButton, tradeScamFrame)
 
-print("MM2 GUI: Lazy-loading script loaded successfully.") 
+print("MM2 GUI: Re-parenting fix script loaded.") 

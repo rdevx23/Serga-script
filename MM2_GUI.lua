@@ -79,17 +79,6 @@ local ProgressLabel = Instance.new("TextLabel")
 local ItemPreview = Instance.new("ImageLabel")
 local UICorner_28 = Instance.new("UICorner")
 
--- ADD MM2 ITEM LIST TABLE AND SELECTION VARIABLES
-local MM2ItemList = {
-    -- Ancient
-    "Niks Scythe","Gingerscope","Travelers Axe","Celestial","Harvester","Vampires Axe","Icepiercer","Icebreaker","Swirly Axe","Elderwood Scythe","Batwing","Hallowscythe","Log Chopper","Ice Wing",
-    -- Godly (subset for demo, extend as needed)
-    "Travelers Gun","Evergun","Turkey","Evergreen","Blossom","Sakura","Constellation","Vampires Gun","Darkshot","Darksword","Bauble","Bat","Rainbow Gun","Rainbow Knife","Candy","Soul","Spirit","Flowerwood Gun","Bloom","Flora","Ocean","Flowerwood Knife","Waves","Heartblade","Water Gun","Borealis","Australis","Sugar","Luger","Iceblaster","Candleflame","Makeshift","Elderwood Blade","Swirly Gun","Red Luger","Pearl","Pearlshine","Elderwood Revolver","Darkbringer","Phantom","Spectre","Lightbringer","Swirly Blade","Green Luger","Laser","Iceflake","Icebeam","Plasmabeam","Plasmablade","Hallow Gun","Amerilaser","Old Glory","Shark","Night Blade","Blaster","Pixel","Ginger Luger","Virtual","Cookiecane","Gingermint","Nebula","Eternal Cane","Luger Cane","Gemstone","Clockwork","Slasher","Gingerblade","Battle Axe II","Death Shard","Jinglegun","Heat","Minty","Chill","Spider","Xmas","Tides","Fang","Vampires Edge","Hallows Edge","Pumpking","Battle Axe","Frostsaber","Bioblade","Ice Shard","Eternal","Flames","Winters Edge","Hallows Blade","Handsaw","Ice Dragon","Eternal III","Eternal IV","Eternal II","Boneblade","Saw","Snowflake","Ghost Blade","Frostbite","Eggblade","Prismatic","Peppermint","Cookieblade","Red Seer","Blue Seer","Purple Seer","Seer","Orange Seer","Yellow Seer"
-}
-
-local SelectedGoldyItem = nil
-local SelectedSpawnItem = nil
-
 -- Set properties for GUI elements
 MM2GUI.Name = "MM2GUI"
 MM2GUI.Parent = game.CoreGui
@@ -622,23 +611,26 @@ end)
 
 -- Open Case Button (Goldy Spawner)
 OpenCaseButton.MouseButton1Click:Connect(function()
-    if not SelectedGoldyItem then
-        OpeningStatus.Text = "Please select an item"
+    local itemName = GoldyItemBox.Text
+    if itemName == "" then
+        OpeningStatus.Text = "Please enter an item name"
         OpeningStatus.Visible = true
-        OpeningStatus.TextColor3 = Color3.fromRGB(255,100,100)
+        OpeningStatus.TextColor3 = Color3.fromRGB(255, 100, 100)
         return
     end
-    OpeningStatus.TextColor3 = Color3.fromRGB(255,255,255)
-    OpeningStatus.Visible = true
+    
+    -- Case opening animation
+    CaseDisplay.Visible = true
     OpeningStatus.Text = "Opening case..."
-    -- roulette animation
-    for i=1,40 do
-        local randName = MM2ItemList[math.random(1,#MM2ItemList)]
-        OpeningStatus.Text = randName
-        wait(0.05)
-    end
-    OpeningStatus.Text = "You got: "..SelectedGoldyItem.."!"
-    OpeningStatus.TextColor3 = Color3.fromRGB(100,255,100)
+    OpeningStatus.Visible = true
+    OpeningStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+    
+    -- Simulate opening animation
+    wait(1)
+    CaseDisplay.Visible = false
+    ItemImage.Visible = true
+    OpeningStatus.Text = "You got: " .. itemName .. "!"
+    OpeningStatus.TextColor3 = Color3.fromRGB(100, 255, 100)
 end)
 
 -- Open Item Spawner Button
@@ -653,16 +645,23 @@ end)
 
 -- Spawn Button
 SpawnButton.MouseButton1Click:Connect(function()
-    if not SelectedSpawnItem then return end
+    local itemName = ItemNameBox.Text
+    if itemName == "" then
+        return
+    end
+    
     ItemSpawnerFrame.Visible = false
     SpawningProgressFrame.Visible = true
-    SpawningItemLabel.Text = "Spawning: "..SelectedSpawnItem
-    for i=1,100 do
-        ProgressFill.Size = UDim2.new(i/100,0,1,0)
-        ProgressLabel.Text = i.."%"
-        wait(0.02)
+    SpawningItemLabel.Text = "Spawning: " .. itemName
+    
+    -- Simulate progress
+    for i = 1, 100 do
+        ProgressFill.Size = UDim2.new(i/100, 0, 1, 0)
+        ProgressLabel.Text = i .. "%"
+        wait(0.03) -- Adjust speed as needed
     end
-    wait(0.3)
+    
+    wait(0.5)
     SpawningProgressFrame.Visible = false
 end)
 

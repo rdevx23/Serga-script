@@ -1,10 +1,10 @@
 --[[
     Murder Mystery 2 GUI - Rebuilt from Diagnostic
-    Version: 10 (Re-Parenting Fix)
+    Version: 11 (Lazy Loading - Final)
 
-    This version implements a re-parenting strategy on tab switching.
-    This is a brute-force method to fix rendering bugs in specific executors
-    by forcing a complete redraw of the tab's contents on every click.
+    This version implements a true "lazy loading" system based on user feedback.
+    Content for a tab is only created AFTER the tab is made visible on the first click.
+    This ensures elements are always parented to a visible frame, fixing executor compatibility.
 ]]
 
 -- =============================================
@@ -44,9 +44,7 @@ mainFrame.Size = UDim2.new(0, 420, 0, 280)
 mainFrame.ClipsDescendants = true
 mainFrame.Parent = screenGui
 
-local mainFrameCorner = Instance.new("UICorner")
-mainFrameCorner.CornerRadius = UDim.new(0, 8)
-mainFrameCorner.Parent = mainFrame
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
 
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
@@ -71,9 +69,7 @@ local userInputService = game:GetService("UserInputService")
 local dragging, dragInput, lastPosition
 topBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        lastPosition = input.Position
-        dragInput = input
+        dragging = true; lastPosition = input.Position; dragInput = input
     end
 end)
 topBar.InputEnded:Connect(function(input)
@@ -95,9 +91,7 @@ tabsPanel.BackgroundTransparency = 1
 tabsPanel.Size = UDim2.new(0, 150, 1, -40)
 tabsPanel.Position = UDim2.new(0, 0, 0, 40)
 tabsPanel.Parent = mainFrame
-local tabsLayout = Instance.new("UIListLayout")
-tabsLayout.Padding = UDim.new(0, 5)
-tabsLayout.Parent = tabsPanel
+Instance.new("UIListLayout", tabsPanel).Padding = UDim.new(0, 5)
 
 local contentPanel = Instance.new("Frame")
 contentPanel.BackgroundTransparency = 1
@@ -106,7 +100,7 @@ contentPanel.Position = UDim2.new(0, 150, 0, 40)
 contentPanel.Parent = mainFrame
 
 -- =============================================
--- Section 4: UI Creation Helper Functions (Safe Parenting)
+-- Section 4: UI Creation Helper Functions
 -- =============================================
 local function makeLabel(parent, text)
     local label = Instance.new("TextLabel")
@@ -158,7 +152,7 @@ local function makeToggle(parent, text)
 end
 
 -- =============================================
--- Section 5: Tab System (Re-Parenting Fix)
+-- Section 5: Tab System (Lazy Loading - Final)
 -- =============================================
 local function makeContentFrame()
     local frame = Instance.new("Frame")
@@ -166,80 +160,75 @@ local function makeContentFrame()
     frame.Size = UDim2.new(1, 0, 1, 0)
     frame.Visible = false
     frame.Parent = contentPanel
-    local padding = Instance.new("UIPadding")
-    padding.PaddingTop, padding.PaddingLeft, padding.PaddingRight = UDim.new(0, 15), UDim.new(0, 15), UDim.new(0, 15)
-    padding.Parent = frame
-    local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 10)
-    layout.Parent = frame
+    Instance.new("UIPadding", frame).Padding = UDim.new(0,15)
+    Instance.new("UIListLayout", frame).Padding = UDim.new(0, 10)
     return frame
 end
 
 local tradeScamFrame, autoFarmFrame, godlySpawnerFrame, dupeGenFrame = makeContentFrame(), makeContentFrame(), makeContentFrame(), makeContentFrame()
 local allContentFrames = {tradeScamFrame, autoFarmFrame, godlySpawnerFrame, dupeGenFrame}
 local allTabButtons = {}
+local populatedTabs = {}
 
 local function switchTab(tabButton, frameToShow)
-    -- Hide all other frames
-    for _, frame in ipairs(allContentFrames) do
-        if frame ~= frameToShow then
-            frame.Visible = false
-        end
-    end
-
-    -- Update button visuals
+    for _, frame in ipairs(allContentFrames) do frame.Visible = false end
     for _, button in ipairs(allTabButtons) do
         button.BackgroundColor3, button.TextColor3 = Color3.fromRGB(24, 24, 24), Color3.fromRGB(200, 200, 200)
     end
-    tabButton.BackgroundColor3, tabButton.TextColor3 = Color3.fromRGB(35, 35, 35), Color3.fromRGB(255, 255, 255)
-
-    -- Re-parent to force redraw
-    frameToShow.Parent = nil
-    frameToShow.Parent = contentPanel
     frameToShow.Visible = true
+    tabButton.BackgroundColor3, tabButton.TextColor3 = Color3.fromRGB(35, 35, 35), Color3.fromRGB(255, 255, 255)
 end
 
-local function makeTabButton(text, contentFrame)
+-- =============================================
+-- Section 6: Population Functions & Tab Creation
+-- =============================================
+local function populateTradeScam()
+    makeLabel(tradeScamFrame, "Victim Name")
+    makeInput(tradeScamFrame, "UsernameHere")
+    makeButton(tradeScamFrame, "Freeze Trade", 18)
+    makeButton(tradeScamFrame, "Force Accept", 16)
+end
+
+local function populateAutoFarm()
+    makeToggle(autoFarmFrame, "Box ESP")
+    makeToggle(autoFarmFrame, "Skeleton ESP")
+end
+
+local function populateGodlySpawner()
+    makeLabel(godlySpawnerFrame, "Enter Item Name")
+    makeInput(godlySpawnerFrame, "e.g. Harvester")
+    makeButton(godlySpawnerFrame, "SPAWN", 16)
+end
+
+local itemSpawnerGui
+local function populateDupeGenerate()
+    makeButton(dupeGenFrame, "Open Item Spawner", 16, function()
+        if itemSpawnerGui then itemSpawnerGui.Enabled = true end
+    end)
+end
+
+local function makeTabButton(text, contentFrame, populationFunc)
     local button = Instance.new("TextButton")
     button.Text, button.Font, button.TextSize, button.TextColor3, button.BackgroundColor3, button.TextXAlignment = "  " .. text, Enum.Font.SourceSans, 16, Color3.fromRGB(200, 200, 200), Color3.fromRGB(24, 24, 24), Enum.TextXAlignment.Left
     button.Size = UDim2.new(1, 0, 0, 35)
+    button.Parent = tabsPanel
+    
     button.MouseButton1Click:Connect(function()
         switchTab(button, contentFrame)
+        if not populatedTabs[contentFrame] then
+            populationFunc()
+            populatedTabs[contentFrame] = true
+        end
     end)
-    button.Parent = tabsPanel
+    
     table.insert(allTabButtons, button)
     return button
 end
 
--- =============================================
--- Section 6: Populate All Tabs At Start
--- =============================================
--- Trade Scam
-makeLabel(tradeScamFrame, "Victim Name")
-makeInput(tradeScamFrame, "UsernameHere")
-makeButton(tradeScamFrame, "Freeze Trade", 18)
-makeButton(tradeScamFrame, "Force Accept", 16)
-
--- AutoFarm/ESP
-makeToggle(autoFarmFrame, "Box ESP")
-makeToggle(autoFarmFrame, "Skeleton ESP")
-
--- Godly Spawner
-makeLabel(godlySpawnerFrame, "Enter Item Name")
-makeInput(godlySpawnerFrame, "e.g. Harvester")
-makeButton(godlySpawnerFrame, "SPAWN", 16)
-
--- Dupe/Generate
-local itemSpawnerGui -- Forward declare
-makeButton(dupeGenFrame, "Open Item Spawner", 16, function()
-    if itemSpawnerGui then itemSpawnerGui.Enabled = true end
-end)
-
--- Create tab buttons
-local tradeScamButton = makeTabButton("Trade Scam", tradeScamFrame)
-makeTabButton("AutoFarm/ESP", autoFarmFrame)
-makeTabButton("Godly Spawner", godlySpawnerFrame)
-makeTabButton("Dupe/Generate", dupeGenFrame)
+local tradeScamButton = makeTabButton("Trade Scam", tradeScamFrame, populateTradeScam)
+makeTabButton("AutoFarm/ESP", autoFarmFrame, populateAutoFarm)
+makeTabButton("Godly Spawner", godlySpawnerFrame, populateGodlySpawner)
+makeTabButton("Dupe/Generate", dupeGenFrame, populateDupeGenerate)
 
 -- =============================================
 -- Section 7: Item Spawner Window
@@ -323,7 +312,9 @@ spawnBtn.Position, spawnBtn.AnchorPoint, spawnBtn.Size = UDim2.new(0.95, 0, 1, -
 -- =============================================
 -- Section 8: Finalization
 -- =============================================
--- Initially, show the first tab
+-- Manually trigger the first tab's visibility and population
 switchTab(tradeScamButton, tradeScamFrame)
+populateTradeScam()
+populatedTabs[tradeScamFrame] = true
 
-print("MM2 GUI: Re-parenting fix script loaded.") 
+print("MM2 GUI: Lazy loading fix script loaded.") 

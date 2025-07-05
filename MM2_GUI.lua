@@ -1,11 +1,11 @@
 --[[
-    Murder Mystery 2 GUI - Final Version
-    Version: 12 (Ultra-Simple Structure + Hide/Show Feature)
+    Murder Mystery 2 GUI - Diagnostic
+    Version: 13 (Testing Core Visibility)
 
-    This script returns to the most basic and reliable structure:
-    - All UI elements for all tabs are created upfront. No lazy loading or other tricks.
-    - Tab switching only toggles visibility.
-    - Implements the user-requested hide/show functionality.
+    This script REMOVES the hide/show feature to test one single thing:
+    Can the main GUI window be displayed reliably?
+    If this works, the problem is with the hide/show logic.
+    If it fails, the problem is more fundamental.
 ]]
 
 -- =============================================
@@ -28,7 +28,7 @@ local player = game:GetService("Players").LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 -- =============================================
--- Section 2: Main GUI & Hide/Show Elements
+-- Section 2: Main GUI (Visibility Test)
 -- =============================================
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "MM2_Main_GUI"
@@ -43,23 +43,9 @@ mainFrame.Position = UDim2.fromScale(0.5, 0.5)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Size = UDim2.new(0, 420, 0, 280)
 mainFrame.ClipsDescendants = true
-mainFrame.Visible = true -- Initially visible
+mainFrame.Visible = true -- CORE TEST: Should be visible
 mainFrame.Parent = screenGui
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
-
--- Button to SHOW the menu
-local showButton = Instance.new("TextButton")
-showButton.Name = "ShowButton"
-showButton.Size = UDim2.new(0, 50, 0, 50)
-showButton.Position = UDim2.new(0, 15, 0.5, 0)
-showButton.AnchorPoint = Vector2.new(0, 0.5)
-showButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-showButton.BorderColor3 = Color3.fromRGB(80, 80, 80)
-showButton.BorderSizePixel = 1
-showButton.Text = ""
-showButton.Visible = false -- Initially hidden
-showButton.Parent = screenGui
-Instance.new("UICorner", showButton).CornerRadius = UDim.new(0, 6)
 
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
@@ -67,30 +53,6 @@ topBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 topBar.Size = UDim2.new(1, 0, 0, 40)
 topBar.BorderSizePixel = 0
 topBar.Parent = mainFrame
-
--- Button to HIDE the menu
-local hideButton = Instance.new("TextButton")
-hideButton.Name = "HideButton"
-hideButton.Size = UDim2.new(0, 24, 0, 24)
-hideButton.Position = UDim2.new(1, -15, 0.5, 0)
-hideButton.AnchorPoint = Vector2.new(1, 0.5)
-hideButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-hideButton.Text = "X"
-hideButton.Font = Enum.Font.SourceSansBold
-hideButton.TextSize = 16
-hideButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-hideButton.Parent = topBar
-Instance.new("UICorner", hideButton).CornerRadius = UDim.new(0, 4)
-
--- Hide/Show Logic
-hideButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = false
-    showButton.Visible = true
-end)
-showButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = true
-    showButton.Visible = false
-end)
 
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Text = "Murder Mystery 2"
@@ -322,4 +284,4 @@ spawnBtn.Position, spawnBtn.AnchorPoint, spawnBtn.Size = UDim2.new(0.95, 0, 1, -
 -- =============================================
 switchTab(tradeScamButton, tradeScamFrame)
 
-print("MM2 GUI: Final version with hide/show loaded.") 
+print("MM2 GUI: Diagnostic script loaded. No hide/show feature.") 

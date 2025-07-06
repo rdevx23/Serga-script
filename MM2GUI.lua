@@ -1,526 +1,490 @@
+-- MM2 Ultimate GUI
+-- Create a visual GUI for MM2 with hack-like features
+
+-- Create the main interface
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local TopBar = Instance.new("Frame")
 local Title = Instance.new("TextLabel")
 local CloseButton = Instance.new("TextButton")
-local Shadow = Instance.new("Frame")
-local FeatureContainer = Instance.new("ScrollingFrame")
+local FeatureList = Instance.new("ScrollingFrame")
 local UIListLayout = Instance.new("UIListLayout")
-local UIPadding = Instance.new("UIPadding")
-local TradeScamButton = Instance.new("Frame")
-local Button = Instance.new("TextButton")
-local Icon = Instance.new("ImageLabel")
-local Title_2 = Instance.new("TextLabel")
-local Status = Instance.new("TextLabel")
-local SpawnItemsButton = Instance.new("Frame")
-local Button_2 = Instance.new("TextButton")
-local Icon_2 = Instance.new("ImageLabel")
-local Title_3 = Instance.new("TextLabel")
-local Status_2 = Instance.new("TextLabel")
-local DupeItemsButton = Instance.new("Frame")
-local Button_3 = Instance.new("TextButton")
-local Icon_3 = Instance.new("ImageLabel")
-local Title_4 = Instance.new("TextLabel")
-local Status_3 = Instance.new("TextLabel")
-local LevelBoostButton = Instance.new("Frame")
-local Button_4 = Instance.new("TextButton")
-local Icon_4 = Instance.new("ImageLabel")
-local Title_5 = Instance.new("TextLabel")
-local Status_4 = Instance.new("TextLabel")
-local InvisibilityButton = Instance.new("Frame")
-local Button_5 = Instance.new("TextButton")
-local Icon_5 = Instance.new("ImageLabel")
-local Title_6 = Instance.new("TextLabel")
-local Status_5 = Instance.new("TextLabel")
-local SpeedBoostButton = Instance.new("Frame")
-local Button_6 = Instance.new("TextButton")
-local Icon_6 = Instance.new("ImageLabel")
-local Title_7 = Instance.new("TextLabel")
-local Status_6 = Instance.new("TextLabel")
-local FlyButton = Instance.new("Frame")
-local Button_7 = Instance.new("TextButton")
-local Icon_7 = Instance.new("ImageLabel")
-local Title_8 = Instance.new("TextLabel")
-local Status_7 = Instance.new("TextLabel")
-local WallHackButton = Instance.new("Frame")
-local Button_8 = Instance.new("TextButton")
-local Icon_8 = Instance.new("ImageLabel")
-local Title_9 = Instance.new("TextLabel")
-local Status_8 = Instance.new("TextLabel")
 
--- Properties
-
-ScreenGui.Name = "MM2HackMenu"
-ScreenGui.Parent = game:GetService("CoreGui")
+-- Set up screen GUI
+ScreenGui.Name = "MM2UltimateGUI"
+ScreenGui.Parent = game:GetService("CoreGui") 
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.ResetOnSpawn = false
 
+-- Main frame styling
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.BorderColor3 = Color3.fromRGB(27, 42, 53)
 MainFrame.BorderSizePixel = 0
-MainFrame.Position = UDim2.new(0.5, -200, 0.5, -225)
-MainFrame.Size = UDim2.new(0, 400, 0, 450)
+MainFrame.Position = UDim2.new(0.5, -175, 0.5, -200)
+MainFrame.Size = UDim2.new(0, 350, 0, 400)
 
+-- Top bar styling
 TopBar.Name = "TopBar"
 TopBar.Parent = MainFrame
-TopBar.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
+TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 TopBar.BorderSizePixel = 0
-TopBar.Size = UDim2.new(1, 0, 0, 40)
+TopBar.Size = UDim2.new(1, 0, 0, 35)
 
+-- Title styling
 Title.Name = "Title"
 Title.Parent = TopBar
-Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundTransparency = 1.000
-Title.Size = UDim2.new(1, -40, 1, 0)
-Title.Font = Enum.Font.GothamSemibold
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.Size = UDim2.new(1, -50, 1, 0)
+Title.Font = Enum.Font.GothamBold
 Title.Text = "MM2 ULTIMATE GUI"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 22.000
+Title.TextColor3 = Color3.fromRGB(255, 50, 50)
+Title.TextSize = 18
+Title.TextXAlignment = Enum.TextXAlignment.Left
 
+-- Close button styling
 CloseButton.Name = "CloseButton"
 CloseButton.Parent = TopBar
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
 CloseButton.BorderSizePixel = 0
-CloseButton.Position = UDim2.new(1, -30, 0.5, -10)
+CloseButton.Position = UDim2.new(1, -25, 0.5, -10)
 CloseButton.Size = UDim2.new(0, 20, 0, 20)
 CloseButton.Font = Enum.Font.GothamBold
 CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButton.TextSize = 14.000
+CloseButton.TextSize = 14
 
-Shadow.Name = "Shadow"
-Shadow.Parent = MainFrame
-Shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Shadow.BackgroundTransparency = 0.700
-Shadow.BorderSizePixel = 0
-Shadow.Position = UDim2.new(0, 5, 0, 5)
-Shadow.Size = UDim2.new(1, 0, 1, 0)
-Shadow.ZIndex = -1
+-- Feature list styling
+FeatureList.Name = "FeatureList"
+FeatureList.Parent = MainFrame
+FeatureList.BackgroundTransparency = 1
+FeatureList.Position = UDim2.new(0, 0, 0, 40)
+FeatureList.Size = UDim2.new(1, 0, 1, -45)
+FeatureList.CanvasSize = UDim2.new(0, 0, 0, 470)
+FeatureList.ScrollBarThickness = 4
 
-FeatureContainer.Name = "FeatureContainer"
-FeatureContainer.Parent = MainFrame
-FeatureContainer.Active = true
-FeatureContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-FeatureContainer.BackgroundTransparency = 1.000
-FeatureContainer.BorderSizePixel = 0
-FeatureContainer.Position = UDim2.new(0, 0, 0, 40)
-FeatureContainer.Size = UDim2.new(1, 0, 1, -40)
-FeatureContainer.CanvasSize = UDim2.new(0, 0, 0, 500)
-FeatureContainer.ScrollBarThickness = 6
-
-UIListLayout.Parent = FeatureContainer
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+-- List layout
+UIListLayout.Parent = FeatureList
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 12)
+UIListLayout.Padding = UDim.new(0, 10)
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-UIPadding.Parent = FeatureContainer
-UIPadding.PaddingTop = UDim.new(0, 15)
+-- Function to create an input field for spawn/dupe items
+local function createInputField(parent, placeholder)
+    local InputFrame = Instance.new("Frame")
+    local InputField = Instance.new("TextBox")
+    local SubmitButton = Instance.new("TextButton")
+    
+    InputFrame.Name = "InputFrame"
+    InputFrame.Parent = parent
+    InputFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    InputFrame.BorderSizePixel = 0
+    InputFrame.Position = UDim2.new(0, 0, 1, 5)
+    InputFrame.Size = UDim2.new(1, 0, 0, 40)
+    InputFrame.Visible = false
+    
+    InputField.Name = "InputField"
+    InputField.Parent = InputFrame
+    InputField.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    InputField.BorderSizePixel = 0
+    InputField.Position = UDim2.new(0, 10, 0.5, -15)
+    InputField.Size = UDim2.new(0.7, -15, 0, 30)
+    InputField.Font = Enum.Font.Gotham
+    InputField.PlaceholderText = placeholder
+    InputField.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+    InputField.Text = ""
+    InputField.TextColor3 = Color3.fromRGB(255, 255, 255)
+    InputField.TextSize = 14
+    
+    SubmitButton.Name = "SubmitButton"
+    SubmitButton.Parent = InputFrame
+    SubmitButton.BackgroundColor3 = Color3.fromRGB(50, 120, 255)
+    SubmitButton.BorderSizePixel = 0
+    SubmitButton.Position = UDim2.new(0.7, 5, 0.5, -15)
+    SubmitButton.Size = UDim2.new(0.3, -15, 0, 30)
+    SubmitButton.Font = Enum.Font.GothamSemibold
+    SubmitButton.Text = "Submit"
+    SubmitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SubmitButton.TextSize = 14
+    
+    -- Submit button functionality
+    SubmitButton.MouseButton1Click:Connect(function()
+        local itemName = InputField.Text
+        
+        if itemName ~= "" then
+            -- Show notification with the item name
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = parent.Name:gsub("Button", "") .. " Success",
+                Text = "Processing: " .. itemName,
+                Duration = 3
+            })
+            
+            -- Clear the input field
+            InputField.Text = ""
+        else
+            -- Show error notification
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Error",
+                Text = "Please enter an item name",
+                Duration = 3
+            })
+        end
+    end)
+    
+    return InputFrame
+end
 
--- Create Feature Buttons with consistent styling
+-- Function to create a level input field
+local function createLevelInput(parent)
+    local InputFrame = Instance.new("Frame")
+    local InputField = Instance.new("TextBox")
+    local SetButton = Instance.new("TextButton")
+    
+    InputFrame.Name = "LevelInputFrame"
+    InputFrame.Parent = parent
+    InputFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    InputFrame.BorderSizePixel = 0
+    InputFrame.Position = UDim2.new(0, 0, 1, 5)
+    InputFrame.Size = UDim2.new(1, 0, 0, 40)
+    InputFrame.Visible = false
+    
+    InputField.Name = "LevelInput"
+    InputField.Parent = InputFrame
+    InputField.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    InputField.BorderSizePixel = 0
+    InputField.Position = UDim2.new(0, 10, 0.5, -15)
+    InputField.Size = UDim2.new(0.7, -15, 0, 30)
+    InputField.Font = Enum.Font.Gotham
+    InputField.PlaceholderText = "Enter level (1-100)"
+    InputField.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+    InputField.Text = ""
+    InputField.TextColor3 = Color3.fromRGB(255, 255, 255)
+    InputField.TextSize = 14
+    
+    SetButton.Name = "SetButton"
+    SetButton.Parent = InputFrame
+    SetButton.BackgroundColor3 = Color3.fromRGB(50, 120, 255)
+    SetButton.BorderSizePixel = 0
+    SetButton.Position = UDim2.new(0.7, 5, 0.5, -15)
+    SetButton.Size = UDim2.new(0.3, -15, 0, 30)
+    SetButton.Font = Enum.Font.GothamSemibold
+    SetButton.Text = "Set"
+    SetButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SetButton.TextSize = 14
+    
+    -- Set button functionality
+    SetButton.MouseButton1Click:Connect(function()
+        local level = tonumber(InputField.Text)
+        
+        if level and level >= 1 and level <= 100 then
+            -- Show notification with the level
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Level Boost",
+                Text = "Setting level to: " .. level,
+                Duration = 3
+            })
+            
+            -- Clear the input field
+            InputField.Text = ""
+        else
+            -- Show error notification
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Error",
+                Text = "Please enter a valid level (1-100)",
+                Duration = 3
+            })
+        end
+    end)
+    
+    return InputFrame
+end
 
--- Trade Scam Button
-TradeScamButton.Name = "TradeScamButton"
-TradeScamButton.Parent = FeatureContainer
-TradeScamButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-TradeScamButton.BorderSizePixel = 0
-TradeScamButton.Size = UDim2.new(0.9, 0, 0, 50)
+-- Function to create a speed slider
+local function createSpeedSlider(parent)
+    local SliderFrame = Instance.new("Frame")
+    local SliderBackground = Instance.new("Frame")
+    local SliderFill = Instance.new("Frame")
+    local SliderButton = Instance.new("TextButton")
+    local SpeedValue = Instance.new("TextLabel")
+    local SetButton = Instance.new("TextButton")
+    
+    SliderFrame.Name = "SpeedSliderFrame"
+    SliderFrame.Parent = parent
+    SliderFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    SliderFrame.BorderSizePixel = 0
+    SliderFrame.Position = UDim2.new(0, 0, 1, 5)
+    SliderFrame.Size = UDim2.new(1, 0, 0, 60)
+    SliderFrame.Visible = false
+    
+    SliderBackground.Name = "SliderBackground"
+    SliderBackground.Parent = SliderFrame
+    SliderBackground.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    SliderBackground.BorderSizePixel = 0
+    SliderBackground.Position = UDim2.new(0.05, 0, 0.3, -5)
+    SliderBackground.Size = UDim2.new(0.7, 0, 0, 10)
+    
+    SliderFill.Name = "SliderFill"
+    SliderFill.Parent = SliderBackground
+    SliderFill.BackgroundColor3 = Color3.fromRGB(50, 120, 255)
+    SliderFill.BorderSizePixel = 0
+    SliderFill.Size = UDim2.new(0.1, 0, 1, 0)
+    
+    SliderButton.Name = "SliderButton"
+    SliderButton.Parent = SliderBackground
+    SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SliderButton.BorderSizePixel = 0
+    SliderButton.Position = UDim2.new(0.1, -5, 0.5, -10)
+    SliderButton.Size = UDim2.new(0, 10, 0, 20)
+    SliderButton.Text = ""
+    SliderButton.ZIndex = 2
+    
+    SpeedValue.Name = "SpeedValue"
+    SpeedValue.Parent = SliderFrame
+    SpeedValue.BackgroundTransparency = 1
+    SpeedValue.Position = UDim2.new(0.1, 0, 0.6, 0)
+    SpeedValue.Size = UDim2.new(0.3, 0, 0, 20)
+    SpeedValue.Font = Enum.Font.GothamSemibold
+    SpeedValue.Text = "x1.0"
+    SpeedValue.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SpeedValue.TextSize = 14
+    SpeedValue.TextXAlignment = Enum.TextXAlignment.Center
+    
+    SetButton.Name = "SetButton"
+    SetButton.Parent = SliderFrame
+    SetButton.BackgroundColor3 = Color3.fromRGB(50, 120, 255)
+    SetButton.BorderSizePixel = 0
+    SetButton.Position = UDim2.new(0.75, 10, 0.3, -15)
+    SetButton.Size = UDim2.new(0.2, -10, 0, 30)
+    SetButton.Font = Enum.Font.GothamSemibold
+    SetButton.Text = "Set"
+    SetButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SetButton.TextSize = 14
+    
+    -- Create labels for the slider
+    local MinLabel = Instance.new("TextLabel")
+    local MaxLabel = Instance.new("TextLabel")
+    
+    MinLabel.Name = "MinLabel"
+    MinLabel.Parent = SliderFrame
+    MinLabel.BackgroundTransparency = 1
+    MinLabel.Position = UDim2.new(0.05, -10, 0.3, -25)
+    MinLabel.Size = UDim2.new(0, 20, 0, 20)
+    MinLabel.Font = Enum.Font.Gotham
+    MinLabel.Text = "x1"
+    MinLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+    MinLabel.TextSize = 12
+    
+    MaxLabel.Name = "MaxLabel"
+    MaxLabel.Parent = SliderFrame
+    MaxLabel.BackgroundTransparency = 1
+    MaxLabel.Position = UDim2.new(0.75, -10, 0.3, -25)
+    MaxLabel.Size = UDim2.new(0, 20, 0, 20)
+    MaxLabel.Font = Enum.Font.Gotham
+    MaxLabel.Text = "x10"
+    MaxLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+    MaxLabel.TextSize = 12
+    
+    -- Slider functionality
+    local speedMultiplier = 1
+    local isDragging = false
+    
+    local function updateSlider(xOffset)
+        local sliderSize = SliderBackground.AbsoluteSize.X
+        local sliderPosition = math.clamp(xOffset - SliderBackground.AbsolutePosition.X, 0, sliderSize)
+        local sliderPercent = sliderPosition / sliderSize
+        
+        SliderFill.Size = UDim2.new(sliderPercent, 0, 1, 0)
+        SliderButton.Position = UDim2.new(sliderPercent, -5, 0.5, -10)
+        
+        speedMultiplier = 1 + (sliderPercent * 9)  -- Range from 1 to 10
+        SpeedValue.Text = string.format("x%.1f", speedMultiplier)
+    end
+    
+    SliderButton.MouseButton1Down:Connect(function()
+        isDragging = true
+    end)
+    
+    game:GetService("UserInputService").InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isDragging = false
+        end
+    end)
+    
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement and isDragging then
+            updateSlider(input.Position.X)
+        end
+    end)
+    
+    SliderBackground.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            updateSlider(input.Position.X)
+        end
+    end)
+    
+    -- Set button functionality
+    SetButton.MouseButton1Click:Connect(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Speed Boost",
+            Text = "Speed set to " .. SpeedValue.Text,
+            Duration = 3
+        })
+    end)
+    
+    return SliderFrame
+end
 
-Button.Name = "Button"
-Button.Parent = TradeScamButton
-Button.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-Button.BorderSizePixel = 0
-Button.Position = UDim2.new(0.9, -40, 0.5, -15)
-Button.Size = UDim2.new(0, 30, 0, 30)
-Button.Font = Enum.Font.GothamSemibold
-Button.Text = "OFF"
-Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button.TextSize = 14.000
+-- Function to create a toggle button
+local function createToggleButton(name, description)
+    local Button = Instance.new("Frame")
+    local Background = Instance.new("Frame")
+    local Title = Instance.new("TextLabel")
+    local Description = Instance.new("TextLabel")
+    local ToggleButton = Instance.new("TextButton")
+    
+    Button.Name = name .. "Button"
+    Button.Parent = FeatureList
+    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Button.BorderSizePixel = 0
+    Button.Size = UDim2.new(0.95, 0, 0, 50)
+    
+    Background.Name = "Background"
+    Background.Parent = Button
+    Background.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Background.BorderSizePixel = 0
+    Background.Position = UDim2.new(0, 1, 0, 1)
+    Background.Size = UDim2.new(1, -2, 1, -2)
+    
+    Title.Name = "Title"
+    Title.Parent = Background
+    Title.BackgroundTransparency = 1
+    Title.Position = UDim2.new(0, 10, 0, 5)
+    Title.Size = UDim2.new(1, -80, 0, 20)
+    Title.Font = Enum.Font.GothamSemibold
+    Title.Text = name
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.TextSize = 16
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    Description.Name = "Description"
+    Description.Parent = Background
+    Description.BackgroundTransparency = 1
+    Description.Position = UDim2.new(0, 10, 0, 25)
+    Description.Size = UDim2.new(1, -80, 0, 20)
+    Description.Font = Enum.Font.Gotham
+    Description.Text = description
+    Description.TextColor3 = Color3.fromRGB(180, 180, 180)
+    Description.TextSize = 14
+    Description.TextXAlignment = Enum.TextXAlignment.Left
+    
+    ToggleButton.Name = "ToggleButton"
+    ToggleButton.Parent = Background
+    ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    ToggleButton.BorderSizePixel = 0
+    ToggleButton.Position = UDim2.new(1, -60, 0.5, -15)
+    ToggleButton.Size = UDim2.new(0, 50, 0, 30)
+    ToggleButton.Font = Enum.Font.GothamBold
+    ToggleButton.Text = "OFF"
+    ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleButton.TextSize = 14
+    
+    -- Add specialized UI elements based on button name
+    local extraUI = nil
+    
+    if name == "Spawn Items" then
+        extraUI = createInputField(Button, "Enter item name to spawn")
+    elseif name == "Dupe Items" then
+        extraUI = createInputField(Button, "Enter item name to duplicate")
+    elseif name == "Level Boost" then
+        extraUI = createLevelInput(Button)
+    elseif name == "Speed Boost" then
+        extraUI = createSpeedSlider(Button)
+    end
+    
+    -- Toggle functionality
+    ToggleButton.MouseButton1Click:Connect(function()
+        if ToggleButton.Text == "OFF" then
+            ToggleButton.Text = "ON"
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+            
+            -- Show the extra UI if it exists
+            if extraUI then
+                extraUI.Visible = true
+                
+                -- Update scroll frame canvas size
+                local totalHeight = 0
+                for _, child in pairs(FeatureList:GetChildren()) do
+                    if child:IsA("Frame") then
+                        totalHeight = totalHeight + child.AbsoluteSize.Y + UIListLayout.Padding.Offset
+                        
+                        -- Check if this button has expanded UI
+                        local expandedUI = child:FindFirstChild("InputFrame") or 
+                                          child:FindFirstChild("LevelInputFrame") or 
+                                          child:FindFirstChild("SpeedSliderFrame")
+                        if expandedUI and expandedUI.Visible then
+                            totalHeight = totalHeight + expandedUI.AbsoluteSize.Y + 5
+                        end
+                    end
+                end
+                
+                FeatureList.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+            end
+            
+            -- Show a notification
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = name .. " Activated",
+                Text = "Feature has been enabled!",
+                Duration = 2
+            })
+        else
+            ToggleButton.Text = "OFF"
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+            
+            -- Hide the extra UI if it exists
+            if extraUI then
+                extraUI.Visible = false
+                
+                -- Update scroll frame canvas size
+                local totalHeight = 0
+                for _, child in pairs(FeatureList:GetChildren()) do
+                    if child:IsA("Frame") then
+                        totalHeight = totalHeight + child.AbsoluteSize.Y + UIListLayout.Padding.Offset
+                        
+                        -- Check if this button has expanded UI
+                        local expandedUI = child:FindFirstChild("InputFrame") or 
+                                          child:FindFirstChild("LevelInputFrame") or 
+                                          child:FindFirstChild("SpeedSliderFrame")
+                        if expandedUI and expandedUI.Visible then
+                            totalHeight = totalHeight + expandedUI.AbsoluteSize.Y + 5
+                        end
+                    end
+                end
+                
+                FeatureList.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+            end
+            
+            -- Show a notification
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = name .. " Deactivated",
+                Text = "Feature has been disabled.",
+                Duration = 2
+            })
+        end
+    end)
+    
+    return Button
+end
 
-Icon.Name = "Icon"
-Icon.Parent = TradeScamButton
-Icon.BackgroundTransparency = 1.000
-Icon.Position = UDim2.new(0, 10, 0.5, -15)
-Icon.Size = UDim2.new(0, 30, 0, 30)
-Icon.Image = "rbxassetid://7072717958" -- Trade icon
-Icon.ImageColor3 = Color3.fromRGB(255, 70, 70)
-
-Title_2.Name = "Title"
-Title_2.Parent = TradeScamButton
-Title_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title_2.BackgroundTransparency = 1.000
-Title_2.Position = UDim2.new(0, 50, 0, 5)
-Title_2.Size = UDim2.new(0, 200, 0, 20)
-Title_2.Font = Enum.Font.GothamSemibold
-Title_2.Text = "Trade Scam"
-Title_2.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title_2.TextSize = 16.000
-Title_2.TextXAlignment = Enum.TextXAlignment.Left
-
-Status.Name = "Status"
-Status.Parent = TradeScamButton
-Status.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Status.BackgroundTransparency = 1.000
-Status.Position = UDim2.new(0, 50, 0, 25)
-Status.Size = UDim2.new(0, 200, 0, 20)
-Status.Font = Enum.Font.Gotham
-Status.Text = "Auto accept valuable trades"
-Status.TextColor3 = Color3.fromRGB(180, 180, 180)
-Status.TextSize = 14.000
-Status.TextXAlignment = Enum.TextXAlignment.Left
-
--- Spawn Items Button
-SpawnItemsButton.Name = "SpawnItemsButton"
-SpawnItemsButton.Parent = FeatureContainer
-SpawnItemsButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-SpawnItemsButton.BorderSizePixel = 0
-SpawnItemsButton.Size = UDim2.new(0.9, 0, 0, 50)
-
-Button_2.Name = "Button"
-Button_2.Parent = SpawnItemsButton
-Button_2.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-Button_2.BorderSizePixel = 0
-Button_2.Position = UDim2.new(0.9, -40, 0.5, -15)
-Button_2.Size = UDim2.new(0, 30, 0, 30)
-Button_2.Font = Enum.Font.GothamSemibold
-Button_2.Text = "OFF"
-Button_2.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button_2.TextSize = 14.000
-
-Icon_2.Name = "Icon"
-Icon_2.Parent = SpawnItemsButton
-Icon_2.BackgroundTransparency = 1.000
-Icon_2.Position = UDim2.new(0, 10, 0.5, -15)
-Icon_2.Size = UDim2.new(0, 30, 0, 30)
-Icon_2.Image = "rbxassetid://6031302931" -- Item icon
-Icon_2.ImageColor3 = Color3.fromRGB(255, 70, 70)
-
-Title_3.Name = "Title"
-Title_3.Parent = SpawnItemsButton
-Title_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title_3.BackgroundTransparency = 1.000
-Title_3.Position = UDim2.new(0, 50, 0, 5)
-Title_3.Size = UDim2.new(0, 200, 0, 20)
-Title_3.Font = Enum.Font.GothamSemibold
-Title_3.Text = "Spawn Items"
-Title_3.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title_3.TextSize = 16.000
-Title_3.TextXAlignment = Enum.TextXAlignment.Left
-
-Status_2.Name = "Status"
-Status_2.Parent = SpawnItemsButton
-Status_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Status_2.BackgroundTransparency = 1.000
-Status_2.Position = UDim2.new(0, 50, 0, 25)
-Status_2.Size = UDim2.new(0, 200, 0, 20)
-Status_2.Font = Enum.Font.Gotham
-Status_2.Text = "Spawn rare knives and guns"
-Status_2.TextColor3 = Color3.fromRGB(180, 180, 180)
-Status_2.TextSize = 14.000
-Status_2.TextXAlignment = Enum.TextXAlignment.Left
-
--- Dupe Items Button
-DupeItemsButton.Name = "DupeItemsButton"
-DupeItemsButton.Parent = FeatureContainer
-DupeItemsButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-DupeItemsButton.BorderSizePixel = 0
-DupeItemsButton.Size = UDim2.new(0.9, 0, 0, 50)
-
-Button_3.Name = "Button"
-Button_3.Parent = DupeItemsButton
-Button_3.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-Button_3.BorderSizePixel = 0
-Button_3.Position = UDim2.new(0.9, -40, 0.5, -15)
-Button_3.Size = UDim2.new(0, 30, 0, 30)
-Button_3.Font = Enum.Font.GothamSemibold
-Button_3.Text = "OFF"
-Button_3.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button_3.TextSize = 14.000
-
-Icon_3.Name = "Icon"
-Icon_3.Parent = DupeItemsButton
-Icon_3.BackgroundTransparency = 1.000
-Icon_3.Position = UDim2.new(0, 10, 0.5, -15)
-Icon_3.Size = UDim2.new(0, 30, 0, 30)
-Icon_3.Image = "rbxassetid://6035078892" -- Copy icon
-Icon_3.ImageColor3 = Color3.fromRGB(255, 70, 70)
-
-Title_4.Name = "Title"
-Title_4.Parent = DupeItemsButton
-Title_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title_4.BackgroundTransparency = 1.000
-Title_4.Position = UDim2.new(0, 50, 0, 5)
-Title_4.Size = UDim2.new(0, 200, 0, 20)
-Title_4.Font = Enum.Font.GothamSemibold
-Title_4.Text = "Dupe Items"
-Title_4.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title_4.TextSize = 16.000
-Title_4.TextXAlignment = Enum.TextXAlignment.Left
-
-Status_3.Name = "Status"
-Status_3.Parent = DupeItemsButton
-Status_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Status_3.BackgroundTransparency = 1.000
-Status_3.Position = UDim2.new(0, 50, 0, 25)
-Status_3.Size = UDim2.new(0, 200, 0, 20)
-Status_3.Font = Enum.Font.Gotham
-Status_3.Text = "Duplicate selected inventory items"
-Status_3.TextColor3 = Color3.fromRGB(180, 180, 180)
-Status_3.TextSize = 14.000
-Status_3.TextXAlignment = Enum.TextXAlignment.Left
-
--- Level Boost Button
-LevelBoostButton.Name = "LevelBoostButton"
-LevelBoostButton.Parent = FeatureContainer
-LevelBoostButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-LevelBoostButton.BorderSizePixel = 0
-LevelBoostButton.Size = UDim2.new(0.9, 0, 0, 50)
-
-Button_4.Name = "Button"
-Button_4.Parent = LevelBoostButton
-Button_4.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-Button_4.BorderSizePixel = 0
-Button_4.Position = UDim2.new(0.9, -40, 0.5, -15)
-Button_4.Size = UDim2.new(0, 30, 0, 30)
-Button_4.Font = Enum.Font.GothamSemibold
-Button_4.Text = "OFF"
-Button_4.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button_4.TextSize = 14.000
-
-Icon_4.Name = "Icon"
-Icon_4.Parent = LevelBoostButton
-Icon_4.BackgroundTransparency = 1.000
-Icon_4.Position = UDim2.new(0, 10, 0.5, -15)
-Icon_4.Size = UDim2.new(0, 30, 0, 30)
-Icon_4.Image = "rbxassetid://6026568215" -- Level up icon
-Icon_4.ImageColor3 = Color3.fromRGB(255, 70, 70)
-
-Title_5.Name = "Title"
-Title_5.Parent = LevelBoostButton
-Title_5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title_5.BackgroundTransparency = 1.000
-Title_5.Position = UDim2.new(0, 50, 0, 5)
-Title_5.Size = UDim2.new(0, 200, 0, 20)
-Title_5.Font = Enum.Font.GothamSemibold
-Title_5.Text = "Level Boost"
-Title_5.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title_5.TextSize = 16.000
-Title_5.TextXAlignment = Enum.TextXAlignment.Left
-
-Status_4.Name = "Status"
-Status_4.Parent = LevelBoostButton
-Status_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Status_4.BackgroundTransparency = 1.000
-Status_4.Position = UDim2.new(0, 50, 0, 25)
-Status_4.Size = UDim2.new(0, 200, 0, 20)
-Status_4.Font = Enum.Font.Gotham
-Status_4.Text = "Auto XP farming"
-Status_4.TextColor3 = Color3.fromRGB(180, 180, 180)
-Status_4.TextSize = 14.000
-Status_4.TextXAlignment = Enum.TextXAlignment.Left
-
--- Invisibility Button
-InvisibilityButton.Name = "InvisibilityButton"
-InvisibilityButton.Parent = FeatureContainer
-InvisibilityButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-InvisibilityButton.BorderSizePixel = 0
-InvisibilityButton.Size = UDim2.new(0.9, 0, 0, 50)
-
-Button_5.Name = "Button"
-Button_5.Parent = InvisibilityButton
-Button_5.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-Button_5.BorderSizePixel = 0
-Button_5.Position = UDim2.new(0.9, -40, 0.5, -15)
-Button_5.Size = UDim2.new(0, 30, 0, 30)
-Button_5.Font = Enum.Font.GothamSemibold
-Button_5.Text = "OFF"
-Button_5.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button_5.TextSize = 14.000
-
-Icon_5.Name = "Icon"
-Icon_5.Parent = InvisibilityButton
-Icon_5.BackgroundTransparency = 1.000
-Icon_5.Position = UDim2.new(0, 10, 0.5, -15)
-Icon_5.Size = UDim2.new(0, 30, 0, 30)
-Icon_5.Image = "rbxassetid://6034230648" -- Ghost icon
-Icon_5.ImageColor3 = Color3.fromRGB(255, 70, 70)
-
-Title_6.Name = "Title"
-Title_6.Parent = InvisibilityButton
-Title_6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title_6.BackgroundTransparency = 1.000
-Title_6.Position = UDim2.new(0, 50, 0, 5)
-Title_6.Size = UDim2.new(0, 200, 0, 20)
-Title_6.Font = Enum.Font.GothamSemibold
-Title_6.Text = "Invisibility"
-Title_6.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title_6.TextSize = 16.000
-Title_6.TextXAlignment = Enum.TextXAlignment.Left
-
-Status_5.Name = "Status"
-Status_5.Parent = InvisibilityButton
-Status_5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Status_5.BackgroundTransparency = 1.000
-Status_5.Position = UDim2.new(0, 50, 0, 25)
-Status_5.Size = UDim2.new(0, 200, 0, 20)
-Status_5.Font = Enum.Font.Gotham
-Status_5.Text = "Become invisible to other players"
-Status_5.TextColor3 = Color3.fromRGB(180, 180, 180)
-Status_5.TextSize = 14.000
-Status_5.TextXAlignment = Enum.TextXAlignment.Left
-
--- Speed Boost Button
-SpeedBoostButton.Name = "SpeedBoostButton"
-SpeedBoostButton.Parent = FeatureContainer
-SpeedBoostButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-SpeedBoostButton.BorderSizePixel = 0
-SpeedBoostButton.Size = UDim2.new(0.9, 0, 0, 50)
-
-Button_6.Name = "Button"
-Button_6.Parent = SpeedBoostButton
-Button_6.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-Button_6.BorderSizePixel = 0
-Button_6.Position = UDim2.new(0.9, -40, 0.5, -15)
-Button_6.Size = UDim2.new(0, 30, 0, 30)
-Button_6.Font = Enum.Font.GothamSemibold
-Button_6.Text = "OFF"
-Button_6.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button_6.TextSize = 14.000
-
-Icon_6.Name = "Icon"
-Icon_6.Parent = SpeedBoostButton
-Icon_6.BackgroundTransparency = 1.000
-Icon_6.Position = UDim2.new(0, 10, 0.5, -15)
-Icon_6.Size = UDim2.new(0, 30, 0, 30)
-Icon_6.Image = "rbxassetid://6026568250" -- Speed icon
-Icon_6.ImageColor3 = Color3.fromRGB(255, 70, 70)
-
-Title_7.Name = "Title"
-Title_7.Parent = SpeedBoostButton
-Title_7.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title_7.BackgroundTransparency = 1.000
-Title_7.Position = UDim2.new(0, 50, 0, 5)
-Title_7.Size = UDim2.new(0, 200, 0, 20)
-Title_7.Font = Enum.Font.GothamSemibold
-Title_7.Text = "Speed Boost"
-Title_7.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title_7.TextSize = 16.000
-Title_7.TextXAlignment = Enum.TextXAlignment.Left
-
-Status_6.Name = "Status"
-Status_6.Parent = SpeedBoostButton
-Status_6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Status_6.BackgroundTransparency = 1.000
-Status_6.Position = UDim2.new(0, 50, 0, 25)
-Status_6.Size = UDim2.new(0, 200, 0, 20)
-Status_6.Font = Enum.Font.Gotham
-Status_6.Text = "Increase movement speed by 3x"
-Status_6.TextColor3 = Color3.fromRGB(180, 180, 180)
-Status_6.TextSize = 14.000
-Status_6.TextXAlignment = Enum.TextXAlignment.Left
-
--- Fly Button
-FlyButton.Name = "FlyButton"
-FlyButton.Parent = FeatureContainer
-FlyButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-FlyButton.BorderSizePixel = 0
-FlyButton.Size = UDim2.new(0.9, 0, 0, 50)
-
-Button_7.Name = "Button"
-Button_7.Parent = FlyButton
-Button_7.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-Button_7.BorderSizePixel = 0
-Button_7.Position = UDim2.new(0.9, -40, 0.5, -15)
-Button_7.Size = UDim2.new(0, 30, 0, 30)
-Button_7.Font = Enum.Font.GothamSemibold
-Button_7.Text = "OFF"
-Button_7.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button_7.TextSize = 14.000
-
-Icon_7.Name = "Icon"
-Icon_7.Parent = FlyButton
-Icon_7.BackgroundTransparency = 1.000
-Icon_7.Position = UDim2.new(0, 10, 0.5, -15)
-Icon_7.Size = UDim2.new(0, 30, 0, 30)
-Icon_7.Image = "rbxassetid://6031302931" -- Fly icon
-Icon_7.ImageColor3 = Color3.fromRGB(255, 70, 70)
-
-Title_8.Name = "Title"
-Title_8.Parent = FlyButton
-Title_8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title_8.BackgroundTransparency = 1.000
-Title_8.Position = UDim2.new(0, 50, 0, 5)
-Title_8.Size = UDim2.new(0, 200, 0, 20)
-Title_8.Font = Enum.Font.GothamSemibold
-Title_8.Text = "Fly"
-Title_8.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title_8.TextSize = 16.000
-Title_8.TextXAlignment = Enum.TextXAlignment.Left
-
-Status_7.Name = "Status"
-Status_7.Parent = FlyButton
-Status_7.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Status_7.BackgroundTransparency = 1.000
-Status_7.Position = UDim2.new(0, 50, 0, 25)
-Status_7.Size = UDim2.new(0, 200, 0, 20)
-Status_7.Font = Enum.Font.Gotham
-Status_7.Text = "Fly freely around the map"
-Status_7.TextColor3 = Color3.fromRGB(180, 180, 180)
-Status_7.TextSize = 14.000
-Status_7.TextXAlignment = Enum.TextXAlignment.Left
-
--- Wall Hack Button
-WallHackButton.Name = "WallHackButton"
-WallHackButton.Parent = FeatureContainer
-WallHackButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-WallHackButton.BorderSizePixel = 0
-WallHackButton.Size = UDim2.new(0.9, 0, 0, 50)
-
-Button_8.Name = "Button"
-Button_8.Parent = WallHackButton
-Button_8.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-Button_8.BorderSizePixel = 0
-Button_8.Position = UDim2.new(0.9, -40, 0.5, -15)
-Button_8.Size = UDim2.new(0, 30, 0, 30)
-Button_8.Font = Enum.Font.GothamSemibold
-Button_8.Text = "OFF"
-Button_8.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button_8.TextSize = 14.000
-
-Icon_8.Name = "Icon"
-Icon_8.Parent = WallHackButton
-Icon_8.BackgroundTransparency = 1.000
-Icon_8.Position = UDim2.new(0, 10, 0.5, -15)
-Icon_8.Size = UDim2.new(0, 30, 0, 30)
-Icon_8.Image = "rbxassetid://6023565901" -- Wall Hack icon
-Icon_8.ImageColor3 = Color3.fromRGB(255, 70, 70)
-
-Title_9.Name = "Title"
-Title_9.Parent = WallHackButton
-Title_9.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title_9.BackgroundTransparency = 1.000
-Title_9.Position = UDim2.new(0, 50, 0, 5)
-Title_9.Size = UDim2.new(0, 200, 0, 20)
-Title_9.Font = Enum.Font.GothamSemibold
-Title_9.Text = "Wall Hack"
-Title_9.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title_9.TextSize = 16.000
-Title_9.TextXAlignment = Enum.TextXAlignment.Left
-
-Status_8.Name = "Status"
-Status_8.Parent = WallHackButton
-Status_8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Status_8.BackgroundTransparency = 1.000
-Status_8.Position = UDim2.new(0, 50, 0, 25)
-Status_8.Size = UDim2.new(0, 200, 0, 20)
-Status_8.Font = Enum.Font.Gotham
-Status_8.Text = "See players through walls"
-Status_8.TextColor3 = Color3.fromRGB(180, 180, 180)
-Status_8.TextSize = 14.000
-Status_8.TextXAlignment = Enum.TextXAlignment.Left
-
--- Add functionality for visual effect (no actual hacking)
+-- Create all feature buttons
+local tradeScam = createToggleButton("Trade Scam", "Auto accept valuable trades")
+local spawnItems = createToggleButton("Spawn Items", "Spawn rare knives and guns")
+local dupeItems = createToggleButton("Dupe Items", "Duplicate selected inventory items")
+local levelBoost = createToggleButton("Level Boost", "Auto XP farming")
+local invisibility = createToggleButton("Invisibility", "Become invisible to other players")
+local speedBoost = createToggleButton("Speed Boost", "Increase movement speed by 3x")
+local fly = createToggleButton("Fly", "Fly freely around the map")
+local wallHack = createToggleButton("Wall Hack", "See players through walls")
 
 -- Make GUI draggable
 local UserInputService = game:GetService("UserInputService")
@@ -565,66 +529,9 @@ CloseButton.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
--- Button toggle functionality (visual only)
-local function setupToggle(button)
-    button.MouseButton1Click:Connect(function()
-        if button.Text == "OFF" then
-            button.Text = "ON"
-            button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
-            local icon = button.Parent:FindFirstChild("Icon")
-            if icon then
-                icon.ImageColor3 = Color3.fromRGB(0, 255, 100)
-            end
-        else
-            button.Text = "OFF"
-            button.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-            local icon = button.Parent:FindFirstChild("Icon")
-            if icon then
-                icon.ImageColor3 = Color3.fromRGB(255, 70, 70)
-            end
-        end
-    end)
-end
-
-setupToggle(Button)
-setupToggle(Button_2)
-setupToggle(Button_3)
-setupToggle(Button_4)
-setupToggle(Button_5)
-setupToggle(Button_6)
-setupToggle(Button_7)
-setupToggle(Button_8)
-
--- Notification when starting script
-local function createNotification()
-    local NotifFrame = Instance.new("Frame")
-    local NotifText = Instance.new("TextLabel")
-    
-    NotifFrame.Name = "NotifFrame"
-    NotifFrame.Parent = ScreenGui
-    NotifFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    NotifFrame.BorderSizePixel = 0
-    NotifFrame.Position = UDim2.new(0, -300, 0.85, 0)
-    NotifFrame.Size = UDim2.new(0, 250, 0, 60)
-    
-    NotifText.Name = "NotifText"
-    NotifText.Parent = NotifFrame
-    NotifText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    NotifText.BackgroundTransparency = 1.000
-    NotifText.Size = UDim2.new(1, 0, 1, 0)
-    NotifText.Font = Enum.Font.GothamSemibold
-    NotifText.Text = "MM2 Ultimate GUI Loaded!"
-    NotifText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    NotifText.TextSize = 18.000
-    
-    -- Animate notification
-    NotifFrame:TweenPosition(UDim2.new(0, 20, 0.85, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 1)
-    
-    wait(3)
-    
-    NotifFrame:TweenPosition(UDim2.new(0, -300, 0.85, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 1, false, function()
-        NotifFrame:Destroy()
-    end)
-end
-
-createNotification() 
+-- Show a welcome notification
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "MM2 Ultimate GUI",
+    Text = "GUI loaded successfully!",
+    Duration = 3
+}) 

